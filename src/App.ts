@@ -1,4 +1,8 @@
+import { _EngineDatasTransport } from ".";
 import Engine from "./Engine/Engine";
+import Vector2 from "./Engine/Maths/Vector2";
+import Ant from "./SimulationAnts/Entities/Ant/Ant";
+import Scene from "./SimulationAnts/Scene";
 
 export const createApp = (mountOn: string = "") => {
   const app = document.querySelector<HTMLElement>(mountOn);
@@ -8,15 +12,21 @@ export const createApp = (mountOn: string = "") => {
 
   const engine = new Engine(app);
 
-  engine.setup(async () => {});
+  engine.setup(async (ctx: CanvasRenderingContext2D) => {
+    const scene = new Scene(ctx);
 
-  let i = 0;
+    window.addEventListener("click", (e: MouseEvent) => {
+      scene.addEntity(new Ant(new Vector2(e.clientX - 5, e.clientY - 5)));
+    });
 
-  engine.loop((ctx: CanvasRenderingContext2D) => {
-    ctx.clearRect(0, 0, window.innerWidth, window.innerHeight);
-    ctx.fillStyle = "#ff0000";
-    ctx.fillRect(100 + i, 200 + i, 300 + i * 5, 400 - i * 2);
-    i += 1;
-    if (i > 100) i = 0;
+    return {
+      scene
+    }
+  });
+
+
+  engine.loop((datas: _EngineDatasTransport) => {
+
+    datas.canvasContext?.clearRect(0, 0, window.innerWidth, window.innerHeight);
   });
 };
