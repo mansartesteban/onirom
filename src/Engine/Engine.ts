@@ -21,6 +21,7 @@ class Engine {
     this.app = app;
     this.observer = new Observer(["setup-finished", "initialized"]);
     this.#initializeEngine();
+
   }
 
   /**
@@ -68,14 +69,18 @@ class Engine {
    * and loop thanks to requestAnimationFrame API
    * @param callback A callback sent to be executed on each available frame
    */
-  #loop(callback: Function) {
+  async #loop(callback: Function) {
     callback(this.datas);
 
     if (this.datas.scene) {
       this.datas.scene.update(this.datas)
     }
 
-    this.datas.tick++;
+    if (this.datas.tick != undefined) {
+      this.datas.tick++;
+    }
+
+    await new Promise(r => setTimeout(r, 1))
     window.requestAnimationFrame(this.#loop.bind(this, callback));
   }
 

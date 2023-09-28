@@ -1,8 +1,8 @@
 import Scene from "./SimulationAnts/Scene"
 
-type _EngineDatasTransport = {
+interface _EngineDatasTransport {
     canvas?: HTMLElement,
     canvasContext?: CanvasRenderingContext2D,
     scene?: Scene,
-    tick: number
+    tick?: number
 }

@@ -1,3 +1,4 @@
+import { _EngineDatasTransport } from "../..";
 import Vector2 from "../../Engine/Maths/Vector2";
 import Component from "../Components";
 
@@ -26,6 +27,10 @@ class TransformComponent extends Component {
 
     set velocity(velocity) {
         this.#velocity = velocity;
+    }
+
+    update() {
+        this.position = this.position.add(this.velocity);
     }
 }
 

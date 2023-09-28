@@ -6,8 +6,8 @@ class Vector2 {
 
   #x: number = 0;
   #y: number = 0;
-  #length: number = 0;
-  #squid: number = 0;
+  #length: number | null = null;
+  #squid: number | null = null;
 
   constructor(x: number = 0, y: number = 0) {
     this.#x = x;
@@ -36,6 +36,10 @@ class Vector2 {
 
   get squid(): number {
     return this.#squid ??= this.x * this.x + this.y * this.y;
+  }
+
+  get normalized(): Vector2 {
+    return this.divide(this.length);
   }
 
   dot(v: Vector2) {
@@ -83,8 +87,18 @@ class Vector2 {
     }
   }
 
-  normalize(): Vector2 {
-    return this.divide(this.length);
+  normalize(): this {
+    this.x = this.normalized.x;
+    this.y = this.normalized.y;
+    return this;
+  }
+
+  clamp() {
+
+  }
+
+  lerp() {
+
   }
 
   invert(): Vector2 {
