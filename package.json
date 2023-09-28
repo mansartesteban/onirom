@@ -1,0 +1,21 @@
+{
+  "name": "simulations",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc && vite build",
+    "preview": "vite preview"
+  },
+  "devDependencies": {
+    "typescript": "^5.0.2",
+    "vite": "^4.4.5"
+  },
+  "dependencies": {
+    "css-loader": "^6.8.1",
+    "sass": "^1.68.0",
+    "sass-loader": "^13.3.2",
+    "style-loader": "^3.3.3"
+  }
+}
