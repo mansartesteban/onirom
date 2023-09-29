@@ -2,25 +2,33 @@ import { _EngineDatasTransport } from "..";
 import Entity from "./Entity";
 
 class Scene {
+  entities: Entity[];
+  canvas: CanvasRenderingContext2D;
 
-    entities: Entity[];
-    canvas: CanvasRenderingContext2D;
+  constructor(canvas: CanvasRenderingContext2D) {
+    this.canvas = canvas;
+    this.entities = [];
+  }
 
-    constructor(canvas: CanvasRenderingContext2D) {
-        this.canvas = canvas;
-        this.entities = [];
+  addEntity(entity: Entity) {
+    this.entities.push(entity);
+  }
+
+  removeEntity(entityToDelete: Entity) {
+    const foundIndex = this.entities.findIndex(
+      (entity) => entity === entityToDelete
+    );
+    if (foundIndex) {
+      this.entities.splice(foundIndex, 1);
     }
+  }
 
-    addEntity(entity: Entity) {
-        this.entities.push(entity);
+  update(datas: _EngineDatasTransport) {
+    // console.info("count entities:", this.entities.length);
+    if (datas.canvasContext !== undefined) {
+      this.entities.forEach((entity) => entity.update(datas));
     }
-
-    update(datas: _EngineDatasTransport) {
-        if (datas.canvasContext !== undefined) {
-            this.entities.forEach(entity => entity.update(datas));
-        }
-    }
-
+  }
 }
 
 export default Scene;

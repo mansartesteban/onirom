@@ -15,28 +15,27 @@ export const createApp = (mountOn: string = "") => {
   engine.setup(async (ctx: CanvasRenderingContext2D) => {
     const scene = new Scene(ctx);
 
-    const ants: Ant[] = []
+    const ants: Ant[] = [];
 
-    for (let i = 0;i < 1000;i++) {
-      let ant = new Ant(new Vector2(400, 400));
-      scene.addEntity(ant);
-      ants.push(ant);
-    }
+    // for (let i = 0; i < 200; i++) {
+    //   let ant = new Ant(new Vector2(400, 400));
+    //   scene.addEntity(ant);
+    //   ants.push(ant);
+    // }
 
     window.addEventListener("click", (e: MouseEvent) => {
-
-      ants.forEach(ant => ant.datas.target = new Vector2(e.clientX, e.clientY))
-      //   scene.addEntity(new Ant(new Vector2(e.clientX - 5, e.clientY - 5)));
+      ants.forEach(
+        (ant) => (ant.datas.target = new Vector2(e.clientX, e.clientY))
+      );
+      scene.addEntity(new Ant(new Vector2(e.clientX - 5, e.clientY - 5)));
     });
 
     return {
-      scene
-    }
+      scene,
+    };
   });
 
-
   engine.loop((datas: _EngineDatasTransport) => {
-
     datas.canvasContext?.clearRect(0, 0, window.innerWidth, window.innerHeight);
   });
 };

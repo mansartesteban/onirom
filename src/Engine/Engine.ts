@@ -7,21 +7,19 @@ import Observer from "./Observer";
 // }
 
 class Engine {
-
   app: HTMLElement;
   observer: Observer;
   initializeFinished: Boolean = false;
   setupFinished: Boolean = false;
 
   datas: _EngineDatasTransport = {
-    tick: 0
+    tick: 0,
   };
 
   constructor(app: HTMLElement) {
     this.app = app;
     this.observer = new Observer(["setup-finished", "initialized"]);
     this.#initializeEngine();
-
   }
 
   /**
@@ -52,16 +50,16 @@ class Engine {
     this.initializeFinished = true;
   }
 
-  /** 
+  /**
    * @description Internal setup function, permits to do some stuff before or after callback has been called
    * and send a signal to advert setup has finished
    * @param callback A callback sent to be executed once on setup
    */
   #setup(callback: Function): void {
     Promise.resolve(callback(this.datas)).then((datas) => {
-      this.datas = { ...this.datas, ...datas }
+      this.datas = { ...this.datas, ...datas };
       this.observer.$emit("setup-finished");
-    });;
+    });
   }
 
   /**
@@ -73,14 +71,14 @@ class Engine {
     callback(this.datas);
 
     if (this.datas.scene) {
-      this.datas.scene.update(this.datas)
+      this.datas.scene.update(this.datas);
     }
 
     if (this.datas.tick != undefined) {
       this.datas.tick++;
     }
 
-    await new Promise(r => setTimeout(r, 1))
+    await new Promise((r) => setTimeout(r, 1));
     window.requestAnimationFrame(this.#loop.bind(this, callback));
   }
 
@@ -90,10 +88,9 @@ class Engine {
    * @param callback The callback which will be passed to internal setup function
    */
   setup(callback: Function) {
-
     // If engine is already initialized, we call the callback
     if (this.initializeFinished) {
-      this.#setup(callback)
+      this.#setup(callback);
     }
 
     // Else we wait to receive the signal that it got initialized
@@ -109,7 +106,6 @@ class Engine {
    */
 
   loop(callback: Function) {
-
     // If internal and developer setup function is already finished, we call the callback
     if (this.setupFinished) {
       this.#loop(callback);
@@ -120,6 +116,10 @@ class Engine {
       this.observer.$on("setup-finished", this.#loop.bind(this, callback));
     }
   }
+
+  // static getTransportDatas(datas): _EngineDatasTransport {
+  // if () throw ...
+  // }
 }
 
 export default Engine;

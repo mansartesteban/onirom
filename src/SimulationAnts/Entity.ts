@@ -2,48 +2,58 @@ import { _EngineDatasTransport } from "..";
 import ArrayUtils from "../Utils/Arrays";
 import Component from "./Components";
 import TransformComponent from "./Components/TransformComponent";
+import Scene from "./Scene";
 
 class Entity {
+  components: Component[] = [];
 
-    components: Component[] = [];
+  transform: TransformComponent = new TransformComponent();
 
-    transform: TransformComponent = new TransformComponent();
+  constructor(...components: Component[]) {
+    this.components = this.components.concat(this.transform, components);
+  }
 
-    constructor(...components: Component[]) {
-        this.components = this.components.concat(this.transform, components);
+  addComponent(component: Component) {
+    this.components.push(component);
+  }
+
+  removeComponent(component: Component) {
+    let foundComponent = this.components.findIndex(
+      (entityComponent) => entityComponent == component
+    );
+    if (foundComponent !== -1) {
+      this.components.splice(foundComponent, 1);
     }
+  }
 
-    addComponent(component: Component) {
-        this.components.push(component);
+  removeComponents(componentType: { new (): Component }) {
+    let foundIndexes = ArrayUtils.findIndexMultiple(
+      this.components,
+      (component: Component) => component instanceof componentType
+    );
+    if (foundIndexes) {
+      ArrayUtils.removeMultiple(this.components, foundIndexes);
     }
+  }
 
-    removeComponent(component: Component) {
-        let foundComponent = this.components.findIndex(entityComponent => entityComponent == component);
-        if (foundComponent !== -1) {
-            this.components.splice(foundComponent, 1);
-        }
-    }
+  getComponent(componentType: { new (): Component }) {
+    return this.components.find((component) => {
+      return component instanceof componentType;
+    });
+  }
 
-    removeComponents(componentType: { new(): Component }) {
-        let foundIndexes = ArrayUtils.findIndexMultiple(this.components, ((component: Component) => component instanceof componentType));
-        if (foundIndexes) {
-            ArrayUtils.removeMultiple(this.components, foundIndexes);
-        }
-    }
+  update(datas: _EngineDatasTransport) {
+    this.updateEntity(datas);
+    this.components.forEach((component) =>
+      component.updateComponent(this, datas)
+    );
+  }
 
-    getComponent(componentType: { new(): Component }) {
-        return this.components.find(component => {
-            return component instanceof componentType;
-        });
-    }
+  updateEntity(datas: _EngineDatasTransport) {}
 
-    update(datas: _EngineDatasTransport) {
-        this.updateEntity(datas);
-        this.components.forEach(component => component.updateComponent(this, datas));
-    }
-
-    updateEntity(datas: _EngineDatasTransport) { }
-
+  delete(scene: Scene) {
+    scene.removeEntity(this);
+  }
 }
 
-export default Entity
+export default Entity;
