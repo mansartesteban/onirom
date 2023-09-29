@@ -19,12 +19,12 @@ class Scene {
       (entity) => entity === entityToDelete
     );
     if (foundIndex) {
+      //   this.entities = this.entities.filter((v, k) => k !== foundIndex);
       this.entities.splice(foundIndex, 1);
     }
   }
 
   update(datas: _EngineDatasTransport) {
-    // console.info("count entities:", this.entities.length);
     if (datas.canvasContext !== undefined) {
       this.entities.forEach((entity) => entity.update(datas));
     }

@@ -6,9 +6,8 @@ import Pheromone from "./Pheromone";
 class PheromoneRenderer extends RenderComponent {
   render(ant: Pheromone, datas: _EngineDatasTransport) {
     if (datas.canvas && datas.canvasContext) {
-      let size = 5;
-
       if (ant.strength > 0) {
+        let size = ant.strength / ant.maxStrength;
         datas.canvasContext.fillStyle =
           "#00ff00" +
           parseInt(
@@ -28,6 +27,7 @@ class PheromoneRenderer extends RenderComponent {
           size,
           size
         );
+        datas.canvasContext.closePath();
       }
     }
   }

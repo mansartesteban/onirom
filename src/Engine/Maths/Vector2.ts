@@ -1,5 +1,4 @@
 class Vector2 {
-
   static X: Vector2 = new Vector2(1, 0);
   static Y: Vector2 = new Vector2(0, 1);
   static O: Vector2 = new Vector2(0, 0);
@@ -31,11 +30,11 @@ class Vector2 {
   }
 
   get length(): number {
-    return this.#length ??= Math.sqrt(this.squid);
+    return (this.#length ??= Math.sqrt(this.squid));
   }
 
   get squid(): number {
-    return this.#squid ??= this.x * this.x + this.y * this.y;
+    return (this.#squid ??= this.x * this.x + this.y * this.y);
   }
 
   get normalized(): Vector2 {
@@ -43,47 +42,64 @@ class Vector2 {
   }
 
   dot(v: Vector2) {
-    if (!(v instanceof Vector2)) throw "Unable to compute a dot product on non Vector2 object";
+    if (!(v instanceof Vector2))
+      throw "Unable to compute a dot product on non Vector2 object";
     return this.x * v.x + this.y * v.y;
   }
 
   add(v: number | Vector2): Vector2 {
     if (v instanceof Vector2) {
       return new Vector2(this.x + v.x, this.y + v.y);
-    } else if (typeof (v) === "number") {
+    } else if (typeof v === "number") {
       return new Vector2(this.x + v, this.y + v);
     } else {
-      throw "Unable to compute a addition on the type '" + typeof (v) + "'. It should be a number or a Vector2";
+      throw (
+        "Unable to compute a addition on the type '" +
+        typeof v +
+        "'. It should be a number or a Vector2"
+      );
     }
   }
 
   sub(v: number | Vector2): Vector2 {
     if (v instanceof Vector2) {
       return new Vector2(this.x - v.x, this.y - v.y);
-    } else if (typeof (v) === "number") {
+    } else if (typeof v === "number") {
       return new Vector2(this.x - v, this.y - v);
     } else {
-      throw "Unable to compute a subsraction on the type '" + typeof (v) + "'. It should be a number or a Vector2";
+      throw (
+        "Unable to compute a subsraction on the type '" +
+        typeof v +
+        "'. It should be a number or a Vector2"
+      );
     }
   }
 
   divide(v: number | Vector2): Vector2 {
     if (v instanceof Vector2) {
       return new Vector2(this.x / v.x, this.y / v.y);
-    } else if (typeof (v) === "number") {
+    } else if (typeof v === "number") {
       return new Vector2(this.x / v, this.y / v);
     } else {
-      throw "Unable to compute a division on the type '" + typeof (v) + "'. It should be a number or a Vector2";
+      throw (
+        "Unable to compute a division on the type '" +
+        typeof v +
+        "'. It should be a number or a Vector2"
+      );
     }
   }
 
   multiply(v: number | Vector2): Vector2 {
     if (v instanceof Vector2) {
       return new Vector2(this.x * v.x, this.y * v.y);
-    } else if (typeof (v) === "number") {
+    } else if (typeof v === "number") {
       return new Vector2(this.x * v, this.y * v);
     } else {
-      throw "Unable to compute a multiplication on the type '" + typeof (v) + "'. It should be a number or a Vector2";
+      throw (
+        "Unable to compute a multiplication on the type '" +
+        typeof v +
+        "'. It should be a number or a Vector2"
+      );
     }
   }
 
@@ -93,13 +109,20 @@ class Vector2 {
     return this;
   }
 
-  clamp() {
-
+  lerped(end: Vector2, amt: number): Vector2 {
+    return new Vector2(
+      (1 - amt) * this.x + amt * end.x,
+      (1 - amt) * this.y + amt * end.y
+    );
   }
 
-  lerp() {
-
+  lerp(end: Vector2, amt: number): this {
+    this.x = this.lerped(end, amt).x;
+    this.y = this.lerped(end, amt).y;
+    return this;
   }
+
+  clamp() {}
 
   invert(): Vector2 {
     return new Vector2(-this.x, -this.y);
@@ -107,10 +130,9 @@ class Vector2 {
 
   static from(origin: Vector2): { to: Function } {
     return {
-      to: (target: Vector2) => target.sub(origin)
+      to: (target: Vector2) => target.sub(origin),
     };
   }
-
 }
 
 export default Vector2;

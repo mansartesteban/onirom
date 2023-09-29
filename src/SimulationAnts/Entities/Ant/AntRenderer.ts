@@ -6,7 +6,7 @@ class AntRenderer extends RenderComponent {
   render(entity: Entity, datas: _EngineDatasTransport) {
     const ctx = datas.canvasContext;
     if (ctx) {
-      let size = 10;
+      let size = 2;
 
       ctx.fillStyle = "#ff0000";
       ctx.fillRect(
@@ -15,6 +15,21 @@ class AntRenderer extends RenderComponent {
         size,
         size
       );
+      ctx.closePath();
+
+      // Sight
+      // datas.canvasContext.arc(
+      //     entity.transform.position.x,
+      //     entity.transform.position.y,
+      //     20,
+      //     0,
+      //     -Math.PI / 4,
+      //     true
+      //   );
+      //   datas.canvasContext.lineTo(
+      //     entity.transform.position.x,
+      //     entity.transform.position.y
+      //   );
     }
   }
 }

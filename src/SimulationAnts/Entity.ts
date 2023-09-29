@@ -44,9 +44,9 @@ class Entity {
 
   update(datas: _EngineDatasTransport) {
     this.updateEntity(datas);
-    this.components.forEach((component) =>
-      component.updateComponent(this, datas)
-    );
+    this.components.forEach((component) => {
+      component.updateComponent(this, datas);
+    });
   }
 
   updateEntity(datas: _EngineDatasTransport) {}
