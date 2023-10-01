@@ -1,4 +1,3 @@
-import { _EngineDatasTransport } from "..";
 import ArrayUtils from "../Utils/Arrays";
 import Component from "./Components";
 import TransformComponent from "./Components/TransformComponent";
@@ -6,6 +5,7 @@ import Scene from "./Scene";
 
 class Entity {
   components: Component[] = [];
+  datas: { [name: string]: any; } = {};
 
   transform: TransformComponent = new TransformComponent();
 
@@ -26,7 +26,7 @@ class Entity {
     }
   }
 
-  removeComponents(componentType: { new (): Component }) {
+  removeComponents(componentType: { new(): Component; }) {
     let foundIndexes = ArrayUtils.findIndexMultiple(
       this.components,
       (component: Component) => component instanceof componentType
@@ -36,23 +36,23 @@ class Entity {
     }
   }
 
-  getComponent(componentType: { new (): Component }) {
+  getComponent(componentType: { new(): Component; }) {
     return this.components.find((component) => {
       return component instanceof componentType;
     });
   }
 
-  update(datas: _EngineDatasTransport) {
-    this.updateEntity(datas);
+  update() {
+    this.updateEntity();
     this.components.forEach((component) => {
-      component.updateComponent(this, datas);
+      component.updateComponent(this);
     });
   }
 
-  updateEntity(datas: _EngineDatasTransport) {}
+  updateEntity() { }
 
-  delete(scene: Scene) {
-    scene.removeEntity(this);
+  delete() {
+    Scene.removeEntity(this);
   }
 }
 

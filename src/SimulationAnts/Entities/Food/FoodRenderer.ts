@@ -1,24 +1,29 @@
-import { _EngineDatasTransport } from "../../..";
+import Color from "../../../Engine/Color";
+import Circle from "../../../Engine/Draw/Circle";
+import Engine from "../../../Engine/Engine";
 import RenderComponent from "../../Components/RenderComponent";
 import Entity from "../../Entity";
 import Food from "./Food";
 
 class FoodRenderer extends RenderComponent {
-  render(entity: Entity, datas: _EngineDatasTransport) {
-    if (datas.canvas && datas.canvasContext) {
-      let food = (entity as Food).food;
-      datas.canvasContext.beginPath();
-      datas.canvasContext.arc(
-        entity.transform.position.x,
-        entity.transform.position.y,
-        food < 0 ? 0 : food,
-        0,
-        Math.PI * 2,
-        true
-      );
-      datas.canvasContext.fillStyle = "#FF00FF44";
-      datas.canvasContext.fill();
-      datas.canvasContext.closePath();
+
+  shape: Circle;
+
+  constructor() {
+    super();
+
+    this.shape = new Circle();
+  }
+
+  render(entity: Entity) {
+    if (Engine.datas.canvas && Engine.datas.canvasContext) {
+      let food = (entity as Food);
+
+      this.shape.position = entity.transform.position;
+      this.shape.color = food.isAimed ? Color.Green : Color.Red;
+      this.shape.radius = food.food < 0 ? 0 : food.food;
+
+      this.shape.draw(Engine.datas.canvasContext);
     }
   }
 }

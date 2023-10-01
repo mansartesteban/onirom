@@ -1,12 +1,12 @@
-import { _EngineDatasTransport } from "../../..";
+import Engine from "../../../Engine/Engine";
 import RenderComponent from "../../Components/RenderComponent";
 import Home from "./Home";
 
 class HomeRenderer extends RenderComponent {
-  render(entity: Home, datas: _EngineDatasTransport) {
-    if (datas.canvas && datas.canvasContext) {
-      datas.canvasContext.beginPath();
-      datas.canvasContext.arc(
+  render(entity: Home) {
+    if (Engine.datas.canvas && Engine.datas.canvasContext) {
+      Engine.datas.canvasContext.beginPath();
+      Engine.datas.canvasContext.arc(
         entity.transform.position.x,
         entity.transform.position.y,
         20,
@@ -14,9 +14,9 @@ class HomeRenderer extends RenderComponent {
         Math.PI * 2,
         true
       );
-      datas.canvasContext.fillStyle = "#FFFF0022";
-      datas.canvasContext.fill();
-      datas.canvasContext.closePath();
+      Engine.datas.canvasContext.fillStyle = "#FFFF0022";
+      Engine.datas.canvasContext.fill();
+      Engine.datas.canvasContext.closePath();
     }
   }
 }

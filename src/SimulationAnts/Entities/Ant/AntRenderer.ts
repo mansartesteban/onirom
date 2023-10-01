@@ -1,35 +1,34 @@
-import { _EngineDatasTransport } from "../../..";
+import Sprite from "../../../Engine/Draw/Sprite";
+import Engine from "../../../Engine/Engine";
+import Map from "../../../Engine/Map";
+import Rotation from "../../../Engine/Maths/Rotation";
 import RenderComponent from "../../Components/RenderComponent";
 import Entity from "../../Entity";
 
 class AntRenderer extends RenderComponent {
-  render(entity: Entity, datas: _EngineDatasTransport) {
-    const ctx = datas.canvasContext;
+
+  #sprite: Sprite;
+  #animationSpeed = 5;
+
+  constructor() {
+    super();
+
+    this.#sprite = new Sprite("/assets/images/ant-sprite.png", {
+      columns: 8,
+      rows: 8,
+      count: 62,
+      scale: .2,
+      offsetRotation: new Rotation(Math.PI / 2, true)
+    });
+  }
+
+  render(entity: Entity) {
+    const ctx = Engine.datas.canvasContext;
     if (ctx) {
-      let size = 2;
 
-      ctx.fillStyle = "#ff0000";
-      ctx.fillRect(
-        entity.transform.position.x - size / 2,
-        entity.transform.position.y - size / 2,
-        size,
-        size
-      );
-      ctx.closePath();
+      this.#sprite.next(this.#animationSpeed);
+      this.#sprite.draw(ctx, entity.transform.position, entity.transform.rotation);
 
-      // Sight
-      // datas.canvasContext.arc(
-      //     entity.transform.position.x,
-      //     entity.transform.position.y,
-      //     20,
-      //     0,
-      //     -Math.PI / 4,
-      //     true
-      //   );
-      //   datas.canvasContext.lineTo(
-      //     entity.transform.position.x,
-      //     entity.transform.position.y
-      //   );
     }
   }
 }

@@ -1,33 +1,23 @@
 import { _EngineDatasTransport } from "../../..";
+import Color from "../../../Engine/Color";
+import Circle from "../../../Engine/Draw/Circle";
+import Engine from "../../../Engine/Engine";
 import MathUtils from "../../../Utils/Math";
 import RenderComponent from "../../Components/RenderComponent";
 import Pheromone from "./Pheromone";
 
 class PheromoneRenderer extends RenderComponent {
-  render(ant: Pheromone, datas: _EngineDatasTransport) {
-    if (datas.canvas && datas.canvasContext) {
-      if (ant.strength > 0) {
-        let size = ant.strength / ant.maxStrength;
-        datas.canvasContext.fillStyle =
-          "#00ff00" +
-          parseInt(
-            MathUtils.mapRange(
-              ant.strength,
-              0,
-              ant.maxStrength,
-              0,
-              255
-            ).toFixed(0)
-          )
-            .toString(16)
-            .padStart(2, "0");
-        datas.canvasContext.fillRect(
-          ant.transform.position.x - size / 2,
-          ant.transform.position.y - size / 2,
-          size,
-          size
-        );
-        datas.canvasContext.closePath();
+  render(pheromone: Pheromone) {
+    if (Engine.datas.canvas && Engine.datas.canvasContext) {
+      if (pheromone.strength > 0) {
+        let size = (pheromone.strength * 5 / pheromone.maxStrength);
+        let color = pheromone.foodDirection ? Color.Grey : Color.Green;
+
+        color.opacity = MathUtils.mapRange(pheromone.maxStrength / pheromone.strength, 0, 1, 0, 255);
+
+        let circle = new Circle(pheromone.transform.position, size, color);
+        circle.draw(Engine.datas.canvasContext);
+
       }
     }
   }

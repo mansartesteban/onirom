@@ -19,6 +19,12 @@ class MathUtils {
 	static randomHexadecimal() {
 		return Math.floor(Math.random() * 16777215).toString(16);
 	}
+	static degreesToRadians(degrees: number = 0) {
+		return degrees * Math.PI / 180;
+	}
+	static radiansToDegrees(radians: number = 0) {
+		return radians * (180 / Math.PI);
+	}
 }
 
 export default MathUtils;

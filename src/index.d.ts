@@ -1,8 +1,25 @@
-import Scene from "./SimulationAnts/Scene"
+import Vector2 from "./Engine/Maths/Vector2";
+import Scene from "./SimulationAnts/Scene";
 
-interface _EngineDatasTransport {
-    canvas?: HTMLElement,
-    canvasContext?: CanvasRenderingContext2D,
-    scene?: Scene,
-    tick?: number
+type _SpriteOptions = {
+    columns?: number,
+    rows?: number,
+    count?: number;
+    scale?: number;
+    offsetRotation?: Rotation;
+};
+
+type _EngineDatasTransport = {
+    canvas: HTMLElement,
+    canvasContext: CanvasRenderingContext2D,
+    scene: Scene,
+    tick: number,
+    map: Map;
+};
+interface _Updatable {
+    update(datas?: _EngineDatasTransport);
+}
+
+interface _Drawable {
+    draw(ctx: CanvasRenderingContext2D);
 }

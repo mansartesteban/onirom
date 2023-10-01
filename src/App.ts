@@ -1,9 +1,9 @@
 import { _EngineDatasTransport } from ".";
 import Engine from "./Engine/Engine";
+import Map from "./Engine/Map";
 import Vector2 from "./Engine/Maths/Vector2";
 import Ant from "./SimulationAnts/Entities/Ant/Ant";
 import Food from "./SimulationAnts/Entities/Food/Food";
-import Home from "./SimulationAnts/Entities/Home/Home";
 import Scene from "./SimulationAnts/Scene";
 import MathUtils from "./Utils/Math";
 
@@ -13,59 +13,60 @@ export const createApp = (mountOn: string = "") => {
     throw 'Can\'t find dom element named "#app", aborting !';
   }
 
+
+  let v = new Vector2(10, 1);
+
   const engine = new Engine(app);
 
-  engine.setup(async (ctx: CanvasRenderingContext2D) => {
-    const scene = new Scene(ctx);
+  engine.setup(async () => {
+
+    Map.displayGrid();
+
+    Scene.initialize(Engine.datas.canvasContext);
 
     const ants: Ant[] = [];
 
-    let home = new Home(
-      new Vector2(window.innerWidth / 2, window.innerHeight / 2)
-    );
-    scene.addEntity(home);
-
-    for (let i = 0; i < 200; i++) {
+    for (let i = 0;i < 1;i++) {
       let ant = new Ant(
-        new Vector2(home.transform.velocity.x, home.transform.position.y)
+        new Vector2()
       );
-      scene.addEntity(ant);
+      Scene.addEntity(ant);
       ants.push(ant);
     }
 
-    for (let i = 0; i < 100; i++) {
+    for (let i = 0;i < 20;i++) {
       let food = new Food(
         new Vector2(
-          MathUtils.random(0, window.innerWidth),
-          MathUtils.random(0, window.innerHeight)
+          MathUtils.random(Map.xMin, Map.xMax),
+          MathUtils.random(Map.yMin, Map.yMax)
         )
       );
-      scene.addEntity(food);
+      Scene.addEntity(food);
     }
 
-    window.addEventListener("contextmenu", (e: MouseEvent) => {
-      e.preventDefault();
-      scene.addEntity(new Food(new Vector2(e.clientX, e.clientY)));
-    });
-    window.addEventListener("click", (e: MouseEvent) => {
-      // ants.forEach(
-      //   (ant) => (ant.datas.target = new Vector2(e.clientX, e.clientY))
-      // );
+    window.addEventListener("mousemove", e => {
+      ants.forEach(ant => {
+        let mousePosition = Map.getMapCoordinates(new Vector2(e.clientX, e.clientY));
+        mousePosition.clampLength(200);
 
-      let direction = Vector2.from(home.transform.position)
-        .to(new Vector2(e.clientX, e.clientY))
-        .multiply(0.1);
-
-      home.transform.velocity.x = direction.x;
-      home.transform.velocity.y = direction.y;
+        ant.datas.target = Map.getMapCoordinates(new Vector2(e.clientX, e.clientY));
+      });
     });
 
     return {
-      scene,
+      Scene,
     };
   });
 
-  engine.loop((datas: _EngineDatasTransport) => {
-    datas.canvasContext?.clearRect(0, 0, window.innerWidth, window.innerHeight);
+  engine.loop(() => {
   });
 };
+
+
+
+/*
+TODO:
+- Document Rotation class
+- Document Color class
+- Créer Mouse qui récupère la position sur le screen et qui la translate sur la map
+*/

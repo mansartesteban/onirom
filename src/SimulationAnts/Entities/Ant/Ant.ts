@@ -1,193 +1,141 @@
-import { _EngineDatasTransport } from "../../..";
+import Color from "../../../Engine/Color";
+import Circle from "../../../Engine/Draw/Circle";
+import Engine from "../../../Engine/Engine";
+import Map from "../../../Engine/Map";
+import Rotation from "../../../Engine/Maths/Rotation";
 import Vector2 from "../../../Engine/Maths/Vector2";
-import MathUtils from "../../../Utils/Math";
+import Time from "../../../Engine/Time";
+import Timer from "../../../Engine/Timer";
 import Entity from "../../Entity";
+import Scene from "../../Scene";
 import Food from "../Food/Food";
-import Home from "../Home/Home";
 import Pheromone from "../Pheromone/Pheromone";
 import AntRenderer from "./AntRenderer";
 
 class Ant extends Entity {
-  datas: { [name: string]: any } = {};
 
-  dispersion: number;
-  speed: number;
-  food: number = 0;
-  autonomy: number = 1000;
-  eating: number = 0;
+    dispersion: number = 80;
+    food: number = 0;
+    autonomy: number = 100000;
+    eating: number = 0;
+    age: number = 0;
+    hasFoodInSight: Boolean = false;
 
-  constructor(
-    position: Vector2 = new Vector2(),
-    velocity: Vector2 = new Vector2()
-  ) {
-    super(new AntRenderer());
+    sensors: Vector2[] = [];
 
-    this.transform.position = position;
-    this.transform.velocity = velocity;
+    maxSpeed: number = 2;
+    steerForce: number = .05;
 
-    this.dispersion = 20;
-    this.speed = 1.5 + Math.random() / 2;
-  }
+    constructor(
+        position: Vector2 = new Vector2()
+    ) {
+        super(new AntRenderer());
 
-  initialize(datas: _EngineDatasTransport) {
-    if (datas.canvas) {
-      this.datas.target = new Vector2(
-        MathUtils.random(0, datas.canvas.clientWidth),
-        MathUtils.random(0, datas.canvas.clientHeight)
-      );
-    }
-  }
+        this.transform.position = position;
+        this.transform.velocity = new Vector2();
+        this.datas.target = new Vector2();
 
-  isAtHome(home: Home) {
-    return (
-      Vector2.from(this.transform.position).to(home.transform.position).length <
-      1
-    );
-  }
-
-  storeFood(home: Home): void {
-    this.food = 0;
-    this.autonomy += 250;
-  }
-
-  heal() {
-    this.autonomy = 1000;
-  }
-
-  getSpeed() {
-    return this.speed + this.autonomy / 1000;
-  }
-
-  updateEntity(datas: _EngineDatasTransport) {
-    if (this.autonomy > 0) {
-      this.autonomy--;
     }
 
-    if (datas.tick !== undefined && datas.tick % 20 === 0) {
-      datas.scene?.addEntity(new Pheromone(this.transform.position));
+    goToTarget() {
+
+        let direction = Vector2.from(this.transform.position).to(this.datas.target).normalize();
+
+        let maxVelocity = direction.copy().multiply(this.maxSpeed);
+        let steeringForce = maxVelocity.sub(this.transform.velocity).multiply(this.steerForce);
+        let acceleration = steeringForce.clampLength(this.steerForce);
+
+        // new Vector2(0, maxVelocity.copy().multiply(1000).length).debug(Engine.datas.canvasContext, new Vector2(0, 0), Color.Red);
+        // new Vector2(20, steeringForce.copy().multiply(1000).length).debug(Engine.datas.canvasContext, new Vector2(20, 0), Color.Green);
+        // new Vector2(40, acceleration.copy().multiply(1000).length).debug(Engine.datas.canvasContext, new Vector2(40, 0), Color.Blue);
+        // new Vector2(60, this.transform.velocity.copy().multiply(100).length).debug(Engine.datas.canvasContext, new Vector2(60, 0), Color.Yellow);
+
+        this.transform.velocity.add(acceleration).clampLength(this.maxSpeed);
+        this.transform.rotation = this.transform.velocity.rotation;
     }
-    if (datas.canvas && datas.canvasContext) {
-      if (this.datas.initialized === undefined) {
-        this.datas.initialized = true;
-        this.initialize(datas);
-      } else {
-        if (!this.eating || datas.tick - 50 > this.eating) {
-          this.eating = 0;
-          let home = datas.scene?.entities.find(
-            (entity) => entity instanceof Home
-          );
 
-          if (!home) {
-            throw "no home";
-          }
+    updateSensors() {
+        let direction = this.transform.velocity.copy().normalized;
 
-          if (this.isAtHome(home)) {
-            if (this.food > 0) {
-              this.storeFood(home);
-            } else if (this.autonomy <= 0) {
-              this.heal();
-            }
-          } else {
-            if (this.food > 0) {
-              this.datas.target = home?.transform.position;
-            } else {
-              let feed = datas.scene?.entities.filter(
-                (entity) => entity instanceof Food
-              );
-              let closest: Food | null = null;
-              feed?.forEach((food) => {
-                if (closest === null) {
-                  closest = food as Food;
-                } else {
-                  let distance = Vector2.from(this.transform.position).to(
-                    food.transform.position
-                  ).length;
-                  if (
-                    distance <
-                    Vector2.from(this.transform.position).to(
-                      closest.transform.position
-                    ).length
-                  ) {
-                    closest = food as Food;
-                  }
-                }
-              });
+        let sensorFront = direction.copy();
+        let sensorLeft = direction.copy().rotate(new Rotation(-30));
+        let sensorRight = direction.copy().rotate(new Rotation(30));
 
-              let hasFoodInSight = false;
+        sensorFront = sensorFront.copy().multiply(30).add(this.transform.position);
+        sensorLeft = sensorLeft.copy().multiply(30).add(this.transform.position);
+        sensorRight = sensorRight.copy().multiply(30).add(this.transform.position);
 
-              if (closest !== null) {
-                let closestDistance = Vector2.from(this.transform.position).to(
-                  (closest as Food).transform.position
-                ).length;
-                if (closestDistance < 80 && (closest as Food).food > 0) {
-                  hasFoodInSight = true;
-                  if (closestDistance < 1 && (closest as Food).food > 0) {
-                    (closest as Food).eat(this);
-                    this.eating = datas.tick;
-                  }
-                  this.datas.target = (closest as Food).transform.position;
-                }
-              }
+        let circleFront = new Circle(sensorFront, 10, Color.Cyan);
+        let circleLeft = new Circle(sensorLeft, 10, Color.Fuchsia);
+        let circleRight = new Circle(sensorRight, 10, Color.Blue);
 
-              if (!hasFoodInSight) {
-                if (this.autonomy <= 0) {
-                  this.datas.target = home?.transform.position;
-                } else {
-                  let minX = -this.dispersion;
-                  if (this.datas.target.x - minX < 0)
-                    minX = this.datas.target.x;
+        circleFront.draw(Engine.datas.canvasContext);
+        circleLeft.draw(Engine.datas.canvasContext);
+        circleRight.draw(Engine.datas.canvasContext);
+    }
 
-                  let maxX = -this.dispersion;
-                  if (this.datas.target.x + maxX > datas.canvas.clientWidth)
-                    maxX = datas.canvas.clientWidth - this.datas.target.x;
+    leavePheromone() {
 
-                  let minY = -this.dispersion;
-                  if (this.datas.target.y - minY < 0)
-                    minY = this.datas.target.y;
-
-                  let maxY = -this.dispersion;
-                  if (this.datas.target.y + maxY > datas.canvas.clientHeight)
-                    maxY = datas.canvas.clientHeight - this.datas.target.y;
-
-                  let a = new Vector2(
-                    MathUtils.random(-minX, maxX),
-                    MathUtils.random(-minY, maxY)
-                  );
-
-                  this.datas.target = this.datas.target.add(a);
-                }
-              }
-            }
-          }
+        if (!this.datas.timer) {
+            this.datas.timer = new Timer();
+            (this.datas.timer as Timer).executeEach(Time.OneMilisecond * 50, () => {
+                let pheromone = new Pheromone(this.transform.position, this.food > 0);
+                Scene.addEntity(pheromone);
+            });
         }
-      }
 
-      let direction = Vector2.from(this.transform.position)
-        .to(this.datas.target)
-        .normalized.multiply(this.getSpeed());
-      // console.log("direction", direction, this.transform.position, this.datas.target)
-
-      // datas.canvasContext.beginPath();
-      // datas.canvasContext.moveTo(this.transform.position.x, this.transform.position.y);
-      // datas.canvasContext.lineTo(this.transform.position.x + direction.x, this.transform.position.y + direction.y);
-      // datas.canvasContext.strokeStyle = "#BB885544";
-      // datas.canvasContext.lineWidth = 9;
-      // datas.canvasContext.stroke();
-
-      // datas.canvasContext.beginPath();
-      // datas.canvasContext.moveTo(this.transform.position.x, this.transform.position.y);
-      // datas.canvasContext.lineTo(this.datas.target.x, this.datas.target.y);
-      // datas.canvasContext.lineWidth = 3;
-      // datas.canvasContext.strokeStyle = "#88BB5544";
-      // datas.canvasContext.stroke();
-
-      // datas.canvasContext.fillStyle = "#00ff00";
-      // datas.canvasContext.fillRect(this.datas.target.x - 3, this.datas.target.y - 3, 6, 6)
-
-      this.transform.velocity.x = direction.x;
-      this.transform.velocity.y = direction.y;
     }
-  }
+
+    goLeft() {
+
+    }
+    goRight() {
+
+    }
+    goForward() {
+
+    }
+
+    smellFood() {
+        let feed: Food[] = Scene.entities.filter((entity: Entity) => entity instanceof Food) as Food[];
+        feed.forEach(food => {
+            // console.log(Vector2.from(food.transform.position).to(this.transform.position).length);
+            if (Vector2.from(food.transform.position).to(this.transform.position).length < 50) {
+                this.datas.target = food.transform.position;
+                food.isAimed = true;
+                this.hasFoodInSight = true;
+                return;
+            } else {
+                food.isAimed = false;
+            }
+        });
+    }
+
+    updateEntity() {
+        this.goToTarget();
+
+        this.smellFood();
+        this.leavePheromone();
+        this.updateSensors();
+    }
+
+
+    /*
+    TODO:
+  
+    OK newTarget
+    OK leavePheromone
+    isAtHome
+    wander
+    searchPath
+    updateSensors
+    eat
+    sleep
+    isHomeClose
+    isFoodClose
+  
+    */
+
 }
 
 export default Ant;

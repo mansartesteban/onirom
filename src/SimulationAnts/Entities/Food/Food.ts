@@ -1,11 +1,12 @@
-import { _EngineDatasTransport } from "../../..";
 import Vector2 from "../../../Engine/Maths/Vector2";
 import Entity from "../../Entity";
-import Ant from "../Ant/Ant";
+import Ant from "../Ant/Ant-Backup";
 import FoodRenderer from "./FoodRenderer";
 
 class Food extends Entity {
+
   food: number = 20;
+  isAimed: Boolean = false;
 
   constructor(
     position: Vector2 = new Vector2(),
@@ -22,9 +23,9 @@ class Food extends Entity {
     this.food--;
   }
 
-  updateEntity(datas: _EngineDatasTransport) {
-    if (datas.scene && this.food < 0) {
-      this.delete(datas.scene);
+  updateEntity() {
+    if (this.food < 0) {
+      this.delete();
     }
   }
 }

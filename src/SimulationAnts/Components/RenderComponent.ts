@@ -1,14 +1,13 @@
-import { _EngineDatasTransport } from "../..";
 import Component from "../Components";
 import Entity from "../Entity";
 
 class RenderComponent extends Component {
 
-    update(entity: Entity, datas: _EngineDatasTransport) {
-        this.render(entity, datas);
+    update(entity: Entity) {
+        this.render(entity);
     }
 
-    render(entity: Entity, datas: _EngineDatasTransport) {
+    render(entity: Entity) {
         throw "Classes which extend RenderComponent must implement 'render' method";
     }
 }
