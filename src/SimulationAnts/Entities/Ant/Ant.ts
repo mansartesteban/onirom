@@ -65,20 +65,20 @@ class Ant extends Entity {
         sensorLeft = sensorLeft.copy().multiply(30).add(this.transform.position);
         sensorRight = sensorRight.copy().multiply(30).add(this.transform.position);
 
-        let circleFront = new Circle(sensorFront, 10, Color.Cyan);
-        let circleLeft = new Circle(sensorLeft, 10, Color.Fuchsia);
-        let circleRight = new Circle(sensorRight, 10, Color.Blue);
+        // let circleFront = new Circle(sensorFront, 10, Color.Cyan);
+        // let circleLeft = new Circle(sensorLeft, 10, Color.Fuchsia);
+        // let circleRight = new Circle(sensorRight, 10, Color.Blue);
 
-        circleFront.draw(Engine.datas.canvasContext);
-        circleLeft.draw(Engine.datas.canvasContext);
-        circleRight.draw(Engine.datas.canvasContext);
+        // circleFront.draw(Engine.datas.canvasContext);
+        // circleLeft.draw(Engine.datas.canvasContext);
+        // circleRight.draw(Engine.datas.canvasContext);
     }
 
     leavePheromone() {
 
         if (!this.datas.timer) {
             this.datas.timer = new Timer();
-            (this.datas.timer as Timer).executeEach(Time.OneMilisecond * 50, () => {
+            (this.datas.timer as Timer).executeEach(Time.OneMilisecond * 500, () => {
                 let pheromone = new Pheromone(this.transform.position, this.food > 0);
                 Scene.addEntity(pheromone);
             });
@@ -99,14 +99,13 @@ class Ant extends Entity {
     smellFood() {
         let feed: Food[] = Scene.entities.filter((entity: Entity) => entity instanceof Food) as Food[];
         feed.forEach(food => {
-            // console.log(Vector2.from(food.transform.position).to(this.transform.position).length);
-            if (Vector2.from(food.transform.position).to(this.transform.position).length < 50) {
+            if (!this.hasFoodInSight && Vector2.from(food.transform.position).to(this.transform.position).length < 50) {
                 this.datas.target = food.transform.position;
                 food.isAimed = true;
                 this.hasFoodInSight = true;
-                return;
+
             } else {
-                food.isAimed = false;
+                // food.isAimed = false;
             }
         });
     }

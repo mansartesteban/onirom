@@ -8,7 +8,7 @@ import Entity from "../../Entity";
 class AntRenderer extends RenderComponent {
 
   #sprite: Sprite;
-  #animationSpeed = 5;
+  #animationSpeed = 3;
 
   constructor() {
     super();
@@ -17,7 +17,7 @@ class AntRenderer extends RenderComponent {
       columns: 8,
       rows: 8,
       count: 62,
-      scale: .2,
+      scale: .05,
       offsetRotation: new Rotation(Math.PI / 2, true)
     });
   }

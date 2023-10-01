@@ -21,7 +21,7 @@ class FoodRenderer extends RenderComponent {
 
       this.shape.position = entity.transform.position;
       this.shape.color = food.isAimed ? Color.Green : Color.Red;
-      this.shape.radius = food.food < 0 ? 0 : food.food;
+      this.shape.radius = (food.food < 0 ? 0 : food.food) / 5;
 
       this.shape.draw(Engine.datas.canvasContext);
     }
