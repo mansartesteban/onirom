@@ -17,15 +17,12 @@ export const createApp = (mountOn: string = "") => {
     throw 'Can\'t find dom element named "#app", aborting !';
   }
 
-
   const engine = new Engine(app);
 
   engine.setup(async () => {
-
     Map.displayGrid();
 
     Scene.initialize(Engine.datas.canvasContext);
-
 
     // for (let i = 0;i < 30;i++) {
     //   let ant = new Ant(
@@ -57,11 +54,8 @@ export const createApp = (mountOn: string = "") => {
     };
   });
 
-  engine.loop(() => {
-
-  });
+  engine.loop(() => {});
 };
-
 
 /*
 TODO:

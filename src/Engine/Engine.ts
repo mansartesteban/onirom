@@ -9,13 +9,12 @@ import Time from "./Time";
 import Timer from "./Timer";
 
 class Engine {
-
   #app: HTMLElement;
   #observer: Observer;
   #setupFinished: Boolean = false;
   #paused: Boolean = false;
 
-  static #datas: { [name: string]: any; } = {};
+  static #datas: { [name: string]: any } = {};
   static initialized: Boolean = false;
 
   static #updatableObjects: _Updatable[] = [];
@@ -31,7 +30,6 @@ class Engine {
    * Emits an event when it has finished
    */
   #initializeEngine() {
-
     // Create base canvas
     const canvas = document.createElement("canvas");
     this.#app.appendChild(canvas);
@@ -46,11 +44,12 @@ class Engine {
     window.addEventListener("resize", () => {
       canvas.width = window.innerWidth;
       canvas.height = window.innerHeight;
+      Map.size = new Vector2(canvas.clientWidth, canvas.clientHeight);
     });
 
     // Create a map to handle coordinate system
     const mapOptions = {
-      size: new Vector2(canvas.clientWidth, canvas.clientHeight)
+      size: new Vector2(canvas.clientWidth, canvas.clientHeight),
     };
     Map.initialize(ctx, mapOptions);
 
@@ -68,7 +67,7 @@ class Engine {
 
     let timer2 = new Timer();
     timer2.executeEach(Time.OneSecond, () => {
-      console.log(Engine.datas.fps);
+      console.info(Engine.datas.fps);
     });
 
     Mouse.initialize();
@@ -84,9 +83,8 @@ class Engine {
    * @param callback A callback sent to be executed once on setup
    */
   #setup(callback: Function): void {
-
     // Wrap the callback into a promise, so :
-    // if the callback have its own promise, we can wait for it to end, 
+    // if the callback have its own promise, we can wait for it to end,
     // else we will wait the callback to end and do some more stuff
     Promise.resolve(callback()).then((datas) => {
       Engine.#datas = { ...Engine.#datas, ...datas };
@@ -100,18 +98,29 @@ class Engine {
    * @param callback A callback sent to be executed on each available frame
    */
   async #loop(callback: Function) {
-
     let c = new Color();
     c.opacity = 1;
 
-    Engine.datas.canvasContext?.clearRect(0, 0, window.innerWidth, window.innerHeight);
+    Engine.datas.canvasContext?.clearRect(
+      0,
+      0,
+      window.innerWidth,
+      window.innerHeight
+    );
     Engine.datas.canvasContext.fillStyle = "#ffffff";
-    Engine.datas.canvasContext.fillRect(0, 0, Engine.datas.canvas?.clientWidth, Engine.datas.canvas?.clientHeight);
+    Engine.datas.canvasContext.fillRect(
+      0,
+      0,
+      Engine.datas.canvas?.clientWidth,
+      Engine.datas.canvas?.clientHeight
+    );
 
     // Doesn't execute anything if the engine is paused
     if (!this.#paused) {
       Map.update();
-      Engine.#updatableObjects.forEach((updatableObject: _Updatable) => updatableObject.update(Engine.datas));
+      Engine.#updatableObjects.forEach((updatableObject: _Updatable) =>
+        updatableObject.update(Engine.datas)
+      );
 
       callback();
 
@@ -119,7 +128,6 @@ class Engine {
       Scene.update();
 
       Engine.#datas.tick++;
-
     }
 
     Time.update();
@@ -170,14 +178,13 @@ class Engine {
   }
 
   static removeUpdatable(object: _Updatable) {
-    const foundIndex = Engine.#updatableObjects.findIndex(o => o === object);
+    const foundIndex = Engine.#updatableObjects.findIndex((o) => o === object);
     if (foundIndex !== -1) {
       Engine.#updatableObjects.splice(foundIndex, 1);
     }
   }
 
   static get datas(): _EngineDatasTransport {
-
     if (!Engine.initialized) {
       throw "Engine not initialized";
     }
@@ -188,12 +195,11 @@ class Engine {
       tick: Engine.#datas.tick,
       scene: Engine.#datas.scene,
       map: Engine.#datas.map,
-      fps: Engine.#datas.fps
+      fps: Engine.#datas.fps,
     };
 
     return datas;
   }
-
 }
 
 export default Engine;
