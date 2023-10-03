@@ -6,19 +6,19 @@ class Time {
     static OneHour: number = Time.OneMinute * 60;
 
     static deltaTime: number = 0;
-    static lastUpdate: number = Date.now();
+    static lastUpdate: number = performance.now();
 
     static update() {
-        let now = Date.now();
+        let now = performance.now();
         Time.deltaTime = (now - Time.lastUpdate);
         this.lastUpdate = now;
     }
 
-    static now() {
-        return Date.now();
+    static now(): number {
+        return performance.now();
     }
 
-    static delta(time: number, lastTime?: number) {
+    static delta(time: number, lastTime?: number): number {
         lastTime = lastTime ?? Time.lastUpdate;
         return Math.abs(lastTime - time);
     }

@@ -1,17 +1,20 @@
 import Rotation from "../../Engine/Maths/Rotation";
 import Vector2 from "../../Engine/Maths/Vector2";
+import Time from "../../Engine/Time";
 import Component from "../Components";
 
 class TransformComponent extends Component {
 
     #position: Vector2 = new Vector2();
     #velocity: Vector2 = new Vector2();
+    #acceleration: Vector2 = new Vector2();
     #rotation: Rotation = new Rotation();
 
     constructor(options?: Record<string, any>) {
         super();
         this.#position = options?.position || new Vector2();
         this.#velocity = options?.velocity || new Vector2();
+        this.#acceleration = options?.acceleration || new Vector2();
         this.#rotation = options?.rotation || new Rotation();
     }
 
@@ -39,8 +42,17 @@ class TransformComponent extends Component {
         this.#rotation = rotation;
     }
 
+    get acceleration() {
+        return this.#acceleration;
+    }
+
+    set acceleration(acceleration: Vector2) {
+        this.#acceleration = acceleration;
+    }
+
     update() {
-        this.position.add(this.velocity);
+        // this.#velocity.add(this.#acceleration.copy().multiply(Time.deltaTime / Time.OneSecond));
+        // this.#position.add(this.#velocity.copy().multiply(Time.deltaTime / Time.OneSecond));
     }
 }
 

@@ -15,6 +15,7 @@ type _EngineDatasTransport = {
     scene: Scene,
     tick: number,
     map: Map;
+    fps: number;
 };
 interface _Updatable {
     update(datas?: _EngineDatasTransport);

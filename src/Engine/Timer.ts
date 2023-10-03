@@ -12,7 +12,7 @@ class Timer {
 
     constructor() {
         Engine.addUpdatable(this);
-        this.#startTime = Date.now();
+        this.#startTime = performance.now();
         this.#time = this.#startTime;
     }
 
@@ -58,7 +58,7 @@ class Timer {
     }
 
     update() {
-        this.#time = Date.now();
+        this.#time = performance.now();
         this.watchCallbacks();
     }
 

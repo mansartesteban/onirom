@@ -1,11 +1,13 @@
 import Color from "../../../Engine/Color";
 import Circle from "../../../Engine/Draw/Circle";
 import Engine from "../../../Engine/Engine";
+import Mouse from "../../../Engine/Inputs/Mouse";
 import Map from "../../../Engine/Map";
 import Rotation from "../../../Engine/Maths/Rotation";
 import Vector2 from "../../../Engine/Maths/Vector2";
 import Time from "../../../Engine/Time";
 import Timer from "../../../Engine/Timer";
+import MathUtils from "../../../Utils/Math";
 import Entity from "../../Entity";
 import Scene from "../../Scene";
 import Food from "../Food/Food";
@@ -23,8 +25,8 @@ class Ant extends Entity {
 
     sensors: Vector2[] = [];
 
-    maxSpeed: number = 2;
-    steerForce: number = .05;
+    maxSpeed: number = .1;
+    steerStrength: number = .05;
 
     constructor(
         position: Vector2 = new Vector2()
@@ -39,19 +41,20 @@ class Ant extends Entity {
 
     goToTarget() {
 
-        let direction = Vector2.from(this.transform.position).to(this.datas.target).normalize();
+        this.datas.target = Mouse.position;
+        let direction = Vector2.from(this.transform.position).to(this.datas.target);
 
-        let maxVelocity = direction.copy().multiply(this.maxSpeed);
-        let steeringForce = maxVelocity.sub(this.transform.velocity).multiply(this.steerForce);
-        let acceleration = steeringForce.clampLength(this.steerForce);
+        if (direction.length > 1) {
 
-        // new Vector2(0, maxVelocity.copy().multiply(1000).length).debug(Engine.datas.canvasContext, new Vector2(0, 0), Color.Red);
-        // new Vector2(20, steeringForce.copy().multiply(1000).length).debug(Engine.datas.canvasContext, new Vector2(20, 0), Color.Green);
-        // new Vector2(40, acceleration.copy().multiply(1000).length).debug(Engine.datas.canvasContext, new Vector2(40, 0), Color.Blue);
-        // new Vector2(60, this.transform.velocity.copy().multiply(100).length).debug(Engine.datas.canvasContext, new Vector2(60, 0), Color.Yellow);
+            const desiredVelocity = direction.normalized.multiply(this.maxSpeed);
+            const desiredSteeringForce = desiredVelocity.sub(this.transform.velocity).multiply(this.steerStrength);
 
-        this.transform.velocity.add(acceleration).clampLength(this.maxSpeed);
-        this.transform.rotation = this.transform.velocity.rotation;
+            this.transform.acceleration = desiredSteeringForce.clampLength(Math.min(this.steerStrength, direction.length / 10));
+            this.transform.velocity = this.transform.velocity.copy().add(this.transform.acceleration.copy().multiply(Time.deltaTime)).clampLength(Math.min(this.maxSpeed, direction.length));
+            this.transform.position.add(this.transform.velocity.copy().multiply(Time.deltaTime));
+
+            this.transform.rotation = this.transform.velocity.rotation;
+        }
     }
 
     updateSensors() {
@@ -113,8 +116,8 @@ class Ant extends Entity {
     updateEntity() {
         this.goToTarget();
 
-        this.smellFood();
-        this.leavePheromone();
+        // this.smellFood();
+        // this.leavePheromone();
         this.updateSensors();
     }
 

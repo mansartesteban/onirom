@@ -1,10 +1,12 @@
 import { _EngineDatasTransport, _Updatable } from "..";
 import Scene from "../SimulationAnts/Scene";
 import Color from "./Color";
+import Mouse from "./Inputs/Mouse";
 import Map from "./Map";
 import Vector2 from "./Maths/Vector2";
 import Observer from "./Observer";
 import Time from "./Time";
+import Timer from "./Timer";
 
 class Engine {
 
@@ -57,6 +59,20 @@ class Engine {
     Engine.#datas.canvasContext = ctx;
     Engine.#datas.tick = 0;
 
+    let fpsTimer = new Timer();
+    let lastTick = Engine.#datas.tick;
+    fpsTimer.executeEach(Time.OneSecond, () => {
+      Engine.#datas.fps = Engine.#datas.tick - lastTick;
+      lastTick = Engine.#datas.tick;
+    });
+
+    let timer2 = new Timer();
+    timer2.executeEach(Time.OneSecond, () => {
+      console.log(Engine.datas.fps);
+    });
+
+    Mouse.initialize();
+
     // Inidicates that initialization has finished
     this.#observer.$emit("initialized");
     Engine.initialized = true;
@@ -87,10 +103,7 @@ class Engine {
 
     let c = new Color();
     c.opacity = 1;
-    console.log(c._toString);
 
-
-    // TODO: Créer une map
     Engine.datas.canvasContext?.clearRect(0, 0, window.innerWidth, window.innerHeight);
     Engine.datas.canvasContext.fillStyle = "#ffffff";
     Engine.datas.canvasContext.fillRect(0, 0, Engine.datas.canvas?.clientWidth, Engine.datas.canvas?.clientHeight);
@@ -111,7 +124,7 @@ class Engine {
 
     Time.update();
 
-    await new Promise((r) => setTimeout(r, 10)); // [FOR DEV] Decrease the loop interval
+    await new Promise((r) => setTimeout(r, 0)); // [FOR DEV] Decrease the loop interval
 
     // Execute loop indefinilty with "this" context
     window.requestAnimationFrame(this.#loop.bind(this, callback));
@@ -174,7 +187,8 @@ class Engine {
       canvasContext: Engine.#datas.canvasContext,
       tick: Engine.#datas.tick,
       scene: Engine.#datas.scene,
-      map: Engine.#datas.map
+      map: Engine.#datas.map,
+      fps: Engine.#datas.fps
     };
 
     return datas;

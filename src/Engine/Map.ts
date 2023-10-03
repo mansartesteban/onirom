@@ -75,17 +75,36 @@ class Map {
     static drawGrid() {
         Map.isInitilized();
 
-        let originX = new Vector2(Map.xMin, 0);
-        let toX = new Vector2(Map.xMax, 0);
+        let tileSize = 22;
+        let horizontalTileSize = Math.floor(Map.size.x / tileSize - 1);
+        let veritcalTileSize = Math.floor(Map.size.y / tileSize - 1);
 
-        let lineX = new Line(originX, toX, Color.DarkGrey, [2, 4]);
-        lineX.draw(Map.canvasContext);
+        for (let i = -horizontalTileSize / 2;i < horizontalTileSize / 2 + 1;i++) {
+            let color = Color.Grey;
+            color.opacity = 0.2;
+            if (i % 5 === 0) {
+                color.opacity = .5;
+            }
+            if (i === horizontalTileSize / 2 - horizontalTileSize / 2) {
+                color.opacity = 1;
+            }
+            let line = new Line(new Vector2(i * tileSize, this.yMin), new Vector2(i * tileSize, this.yMax), color, []);
+            line.draw(Map.canvasContext);
+        }
+        for (let i = -veritcalTileSize / 2;i < veritcalTileSize / 2 + 1;i++) {
+            console.log("i", i);
+            let color = Color.Grey;
+            color.opacity = .2;
+            if (i % 5 === 0) {
+                color.opacity = .5;
+            }
+            if (i === 0) {
+                color.opacity = 1;
+            }
+            let line = new Line(new Vector2(this.xMin, i * tileSize), new Vector2(this.xMax, i * tileSize), color, []);
+            line.draw(Map.canvasContext);
+        }
 
-        let originY = new Vector2(0, Map.yMin);
-        let toY = new Vector2(0, Map.yMax);
-
-        let lineY = new Line(originY, toY, Color.DarkGrey, [2, 4]);
-        lineY.draw(Map.canvasContext);
     }
 
     static update() {
