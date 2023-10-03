@@ -1,5 +1,4 @@
 import Color from "../Color";
-import Map from "../Map";
 import Vector2 from "../Maths/Vector2";
 import Draw from "./Draw";
 
@@ -33,11 +32,8 @@ class Line {
       ctx.strokeStyle = this.#color._toString;
       ctx.lineWidth = this.#thickness;
 
-      let fromOnScreen = Map.getScreenCoordinates(this.#from);
-      let toOnScreen = Map.getScreenCoordinates(this.#to);
-
-      ctx.moveTo(fromOnScreen.x, fromOnScreen.y);
-      ctx.lineTo(toOnScreen.x, toOnScreen.y);
+      ctx.moveTo(this.#from.x, this.#from.y);
+      ctx.lineTo(this.#to.x, this.#to.y);
       ctx.stroke();
 
       return ["strokeStyle", "setLineDash", "lineWidth"];

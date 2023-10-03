@@ -1,16 +1,23 @@
 import { _EngineDatasTransport } from ".";
+import Color from "./Engine/Color";
+import Circle from "./Engine/Draw/Circle";
+import CircleScreen from "./Engine/Draw/CircleScreen";
 import Engine from "./Engine/Engine";
 import Mouse from "./Engine/Inputs/Mouse";
 import Map from "./Engine/Map";
 import Rotation from "./Engine/Maths/Rotation";
 import Vector2 from "./Engine/Maths/Vector2";
 import Time from "./Engine/Time";
+import Timer from "./Engine/Timer";
 import Ant from "./SimulationAnts/Entities/Ant/Ant";
 import Food from "./SimulationAnts/Entities/Food/Food";
 import Scene from "./SimulationAnts/Scene";
 import MathUtils from "./Utils/Math";
 
 const ants: Ant[] = [];
+
+let circle = new CircleScreen(new Vector2(), 10, Color.Red);
+
 export const createApp = (mountOn: string = "") => {
   const app = document.querySelector<HTMLElement>(mountOn);
   if (!app) {
@@ -20,10 +27,42 @@ export const createApp = (mountOn: string = "") => {
   const engine = new Engine(app);
 
   engine.setup(async () => {
-    Map.displayGrid();
 
     Scene.initialize(Engine.datas.canvasContext);
 
+    Map.displayGrid();
+
+    let timer = new Timer();
+
+    timer.executeEach(Time.OneMilisecond * 100, () => {
+      Map.origin = Map.origin.copy().add(10);
+      Map.grid.tileSize += 1;
+    });
+
+    // let eachTen = new CircleScreen(new Vector2(), 1, Color.Green);
+    // let cOriginOfMap = new Circle(Map.origin.copy().add(Map.size), 5, Color.Cyan);
+    // let cOriginOnScreen = new CircleScreen(Map.size, 5, Color.Yellow);
+    // Map.drawGrid();
+
+    // cOriginOfMap.draw(Scene.canvas);
+    // cOriginOnScreen.draw(Scene.canvas);
+
+
+    // for (let i = 0;i < Map.size.x;i++) {
+    //   eachTen.position.x = i;
+    //   eachTen.position.y = Map.size.y / 2;
+    //   if (i % Map.grid.tileSize === 0) {
+    //     eachTen.draw(Scene.canvas);
+    //   }
+    // }
+
+    // for (let i = 0;i < Map.size.y;i++) {
+    //   eachTen.position.y = i;
+    //   eachTen.position.x = Map.size.x / 2;
+    //   if (i % Map.grid.tileSize === 0) {
+    //     eachTen.draw(Scene.canvas);
+    //   }
+    // }
     // for (let i = 0;i < 30;i++) {
     //   let ant = new Ant(
     //     new Vector2(MathUtils.random(Map.xMin, Map.xMax), MathUtils.random(Map.yMin, Map.yMax))
@@ -49,12 +88,19 @@ export const createApp = (mountOn: string = "") => {
     //   });
     // });
 
+    // Mouse.onClick(() => {
+    //   circle.position = Mouse.position;
+    // });
+
     return {
       Scene,
     };
   });
 
-  engine.loop(() => {});
+  engine.loop(() => {
+    circle.draw(Scene.canvas);
+
+  });
 };
 
 /*

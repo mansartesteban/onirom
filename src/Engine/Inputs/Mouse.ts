@@ -1,4 +1,3 @@
-import Engine from "../Engine";
 import Map from "../Map";
 import Vector2 from "../Maths/Vector2";
 
@@ -7,10 +6,11 @@ import Vector2 from "../Maths/Vector2";
  */
 class Mouse {
 
-    static #position: Vector2 = new Vector2();
+    static #position: Vector2;
     static #initialized: Boolean = false;
 
     static #onMoveCallbacks: Function[] = [];
+    static #onClickCallbacks: Function[] = [];
 
     static initialize() {
         Mouse.#position = new Vector2();
@@ -18,6 +18,9 @@ class Mouse {
             Mouse.#position.x = e.x;
             Mouse.#position.y = e.y;
             Mouse.#onMoveCallbacks.forEach((element: Function) => element(e));
+        });
+        window.addEventListener("click", (e) => {
+            Mouse.#onClickCallbacks.forEach((element: Function) => element(e));
         });
         Mouse.#initialized = true;
     }
@@ -70,6 +73,12 @@ class Mouse {
         Mouse.isInitialized();
 
         Mouse.#onMoveCallbacks.push(callback);
+    }
+
+    static onClick(callback: Function) {
+        Mouse.isInitialized();
+
+        Mouse.#onClickCallbacks.push(callback);
     }
 
 }

@@ -1,6 +1,7 @@
 import { _EngineDatasTransport, _Updatable } from "..";
 import Scene from "../SimulationAnts/Scene";
 import Color from "./Color";
+import Draw from "./Draw/Draw";
 import Mouse from "./Inputs/Mouse";
 import Map from "./Map";
 import Vector2 from "./Maths/Vector2";
@@ -14,7 +15,7 @@ class Engine {
   #setupFinished: Boolean = false;
   #paused: Boolean = false;
 
-  static #datas: { [name: string]: any } = {};
+  static #datas: { [name: string]: any; } = {};
   static initialized: Boolean = false;
 
   static #updatableObjects: _Updatable[] = [];
@@ -45,13 +46,18 @@ class Engine {
       canvas.width = window.innerWidth;
       canvas.height = window.innerHeight;
       Map.size = new Vector2(canvas.clientWidth, canvas.clientHeight);
+      ctx.translate(Map.size.x / 2, Map.size.y / 2);
     });
 
     // Create a map to handle coordinate system
     const mapOptions = {
       size: new Vector2(canvas.clientWidth, canvas.clientHeight),
+      tileSize: 20
     };
     Map.initialize(ctx, mapOptions);
+
+    ctx.translate(canvas.clientWidth / 2, canvas.clientHeight / 2);
+    Draw.strokeRect(ctx, Map.xMin, Map.yMin, Map.size.x, Map.size.y, Color.Green);
 
     // Bind all created datas to a glboal object which traverse the app
     Engine.#datas.canvas = canvas;
@@ -102,18 +108,18 @@ class Engine {
     c.opacity = 1;
 
     Engine.datas.canvasContext?.clearRect(
-      0,
-      0,
+      -window.innerWidth / 2,
+      -window.innerHeight / 2,
       window.innerWidth,
       window.innerHeight
     );
-    Engine.datas.canvasContext.fillStyle = "#ffffff";
-    Engine.datas.canvasContext.fillRect(
-      0,
-      0,
-      Engine.datas.canvas?.clientWidth,
-      Engine.datas.canvas?.clientHeight
-    );
+    // Engine.datas.canvasContext.fillStyle = "#ffffff";
+    // Engine.datas.canvasContext.fillRect(
+    //   window.innerWidth / 2,
+    //   window.innerHeight / 2,
+    //   Engine.datas.canvas?.clientWidth,
+    //   Engine.datas.canvas?.clientHeight
+    // );
 
     // Doesn't execute anything if the engine is paused
     if (!this.#paused) {

@@ -1,7 +1,6 @@
 import { _Drawable } from "../..";
 import MathUtils from "../../Utils/Math";
 import Color from "../Color";
-import Map from "../Map";
 import Rotation from "../Maths/Rotation";
 import Vector2 from "../Maths/Vector2";
 import Draw from "./Draw";
@@ -42,26 +41,24 @@ class DebugVector implements _Drawable {
             ctx.lineWidth = this.#thickness;
             ctx.fillStyle = this.#color._toString;
 
-            let from = Map.getScreenCoordinates(this.#from);
-            let to = Map.getScreenCoordinates(this.#to);
             let arrowSize = MathUtils.clamp(this.#thickness * 3, 10, 1000);
-            if (Vector2.from(from).to(to).length <= arrowSize) {
+            if (Vector2.from(this.from).to(this.to).length <= arrowSize) {
                 let color = this.#frame % 4 < 2 ? "#ff0000" : "#ffffff";
                 ctx.strokeStyle = color;
                 ctx.fillStyle = color;
             }
 
-            to.add(Vector2.from(from).to(to).normalized.multiply(-arrowSize));
-            let front = to.copy().add(Vector2.from(from).to(to).normalized.multiply(arrowSize));
-            let frontDirection = Vector2.from(to).to(front).normalized;
+            this.to.add(Vector2.from(this.from).to(this.to).normalized.multiply(-arrowSize));
+            let front = this.to.copy().add(Vector2.from(this.from).to(this.to).normalized.multiply(arrowSize));
+            let frontDirection = Vector2.from(this.to).to(front).normalized;
             let arrowSides = Math.sin(Math.PI / 5) * arrowSize;
 
 
-            let left = frontDirection.rotate(new Rotation(Math.PI / 2)).multiply(arrowSides).add(to);
-            let right = frontDirection.rotate(new Rotation(-Math.PI / 2)).multiply(arrowSides).add(to);
+            let left = frontDirection.rotate(new Rotation(Math.PI / 2)).multiply(arrowSides).add(this.to);
+            let right = frontDirection.rotate(new Rotation(-Math.PI / 2)).multiply(arrowSides).add(this.to);
 
-            ctx.moveTo(from.x, from.y);
-            ctx.lineTo(to.x, to.y);
+            ctx.moveTo(this.from.x, this.from.y);
+            ctx.lineTo(this.to.x, this.to.y);
             ctx.stroke();
 
             ctx.moveTo(front.x, front.y);

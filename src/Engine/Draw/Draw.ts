@@ -1,3 +1,6 @@
+import Color from "../Color";
+import Vector2 from "../Maths/Vector2";
+
 const defaultsAttributes = {
   strokeStyle: "#000",
   lineWidth: "1",
@@ -16,6 +19,16 @@ class Draw {
     if (toReset) {
       Draw.reset(ctx, toReset);
     }
+  }
+
+  static strokeRect(ctx: CanvasRenderingContext2D, x: number, y: number, w: number, h: number, c: Color = Color.Green) {
+
+    let p = new Vector2(x, y);
+    let thickness = 1;
+    ctx.fillStyle = c._toString || "#ff0000";
+    ctx.fillRect(p.x, p.y, w, h);
+    ctx.fillStyle = '#000000';
+    ctx.fillRect(p.x + thickness, p.y + thickness, w - thickness * 2, h - thickness * 2);
   }
 
   static reset(ctx: CanvasRenderingContext2D, properties: string[] = []) {

@@ -3,7 +3,7 @@ import Rotation from "../Maths/Rotation";
 import Vector2 from "../Maths/Vector2";
 import Draw from "./Draw";
 
-class Circle {
+class CircleScreen {
 
     #position: Vector2;
     #radius: number;
@@ -62,15 +62,17 @@ class Circle {
 
             ctx.fillStyle = this.#color._toString;
 
+            let positionOnScreen = this.#position;
+
             ctx.arc(
-                this.position.x,
-                this.position.y,
+                positionOnScreen.x,
+                positionOnScreen.y,
                 this.#radius,
                 this.#direction.rotation.angle - this.#angle.angle / 2,
                 this.#direction.rotation.angle + this.#angle.angle / 2,
             );
             if (this.#angle.angle % (2 * Math.PI) !== 0) {
-                ctx.lineTo(this.position.x, this.position.y);
+                ctx.lineTo(positionOnScreen.x, positionOnScreen.y);
             }
 
             ctx.fill();
@@ -80,4 +82,4 @@ class Circle {
     }
 }
 
-export default Circle;
+export default CircleScreen;
