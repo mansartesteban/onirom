@@ -3,6 +3,7 @@ import Color from "./Engine/Color";
 import Circle from "./Engine/Draw/Circle";
 import CircleScreen from "./Engine/Draw/CircleScreen";
 import Engine from "./Engine/Engine";
+import Grid from "./Engine/Grid";
 import Mouse from "./Engine/Inputs/Mouse";
 import Map from "./Engine/Map";
 import Rotation from "./Engine/Maths/Rotation";
@@ -27,26 +28,33 @@ export const createApp = (mountOn: string = "") => {
   const engine = new Engine(app);
 
   engine.setup(async () => {
-
     Scene.initialize(Engine.datas.canvasContext);
 
     Map.displayGrid();
 
-    let timer = new Timer();
+    // let timer = new Timer();
 
-    timer.executeEach(Time.OneMilisecond * 100, () => {
-      Map.origin = Map.origin.copy().add(10);
-      Map.grid.tileSize += 1;
+    // timer.executeEach(Time.OneMilisecond * 1, () => {
+    //   Map.origin = Map.origin.copy().sub(2);
+    //   // Map.grid.tileSize = 20 + Math.cos(Engine.datas.tick / 100) * 5;
+    // });
+
+    Map.grid.origin = new Vector2(-600, -300);
+
+    let grid = new Grid(new Vector2(), new Vector2(500, 500), {
+      color: Color.Green,
+      tileSize: 50,
     });
+
+    grid.draw(Scene.canvas);
 
     // let eachTen = new CircleScreen(new Vector2(), 1, Color.Green);
     // let cOriginOfMap = new Circle(Map.origin.copy().add(Map.size), 5, Color.Cyan);
     // let cOriginOnScreen = new CircleScreen(Map.size, 5, Color.Yellow);
-    // Map.drawGrid();
+    Map.drawGrid();
 
     // cOriginOfMap.draw(Scene.canvas);
     // cOriginOnScreen.draw(Scene.canvas);
-
 
     // for (let i = 0;i < Map.size.x;i++) {
     //   eachTen.position.x = i;
@@ -97,10 +105,9 @@ export const createApp = (mountOn: string = "") => {
     };
   });
 
-  engine.loop(() => {
-    circle.draw(Scene.canvas);
-
-  });
+  // engine.loop(() => {
+  //   circle.draw(Scene.canvas);
+  // });
 };
 
 /*

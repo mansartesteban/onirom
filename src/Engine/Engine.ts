@@ -15,7 +15,7 @@ class Engine {
   #setupFinished: Boolean = false;
   #paused: Boolean = false;
 
-  static #datas: { [name: string]: any; } = {};
+  static #datas: { [name: string]: any } = {};
   static initialized: Boolean = false;
 
   static #updatableObjects: _Updatable[] = [];
@@ -51,13 +51,12 @@ class Engine {
 
     // Create a map to handle coordinate system
     const mapOptions = {
-      size: new Vector2(canvas.clientWidth, canvas.clientHeight),
-      tileSize: 20
+      size: new Vector2(canvas.clientWidth - 600, canvas.clientHeight - 400),
+      tileSize: 25,
     };
     Map.initialize(ctx, mapOptions);
 
     ctx.translate(canvas.clientWidth / 2, canvas.clientHeight / 2);
-    Draw.strokeRect(ctx, Map.xMin, Map.yMin, Map.size.x, Map.size.y, Color.Green);
 
     // Bind all created datas to a glboal object which traverse the app
     Engine.#datas.canvas = canvas;
