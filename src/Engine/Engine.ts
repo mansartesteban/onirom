@@ -1,7 +1,6 @@
 import { _EngineDatasTransport, _Updatable } from "..";
 import Scene from "../SimulationAnts/Scene";
 import Color from "./Color";
-import Draw from "./Draw/Draw";
 import Mouse from "./Inputs/Mouse";
 import Map from "./Map";
 import Vector2 from "./Maths/Vector2";
@@ -15,7 +14,7 @@ class Engine {
   #setupFinished: Boolean = false;
   #paused: Boolean = false;
 
-  static #datas: { [name: string]: any } = {};
+  static #datas: { [name: string]: any; } = {};
   static initialized: Boolean = false;
 
   static #updatableObjects: _Updatable[] = [];
@@ -51,8 +50,8 @@ class Engine {
 
     // Create a map to handle coordinate system
     const mapOptions = {
-      size: new Vector2(canvas.clientWidth - 600, canvas.clientHeight - 400),
-      tileSize: 25,
+      size: new Vector2(canvas.clientWidth, canvas.clientHeight),
+      tileSize: 30
     };
     Map.initialize(ctx, mapOptions);
 
@@ -72,7 +71,7 @@ class Engine {
 
     let timer2 = new Timer();
     timer2.executeEach(Time.OneSecond, () => {
-      console.info(Engine.datas.fps);
+      // console.info(Engine.datas.fps);
     });
 
     Mouse.initialize();
@@ -112,13 +111,6 @@ class Engine {
       window.innerWidth,
       window.innerHeight
     );
-    // Engine.datas.canvasContext.fillStyle = "#ffffff";
-    // Engine.datas.canvasContext.fillRect(
-    //   window.innerWidth / 2,
-    //   window.innerHeight / 2,
-    //   Engine.datas.canvas?.clientWidth,
-    //   Engine.datas.canvas?.clientHeight
-    // );
 
     // Doesn't execute anything if the engine is paused
     if (!this.#paused) {

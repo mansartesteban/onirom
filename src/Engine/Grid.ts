@@ -1,19 +1,22 @@
 import MathUtils from "../Utils/Math";
 import Color from "./Color";
-import Draw from "./Draw/Draw";
 import Line from "./Draw/Line";
+import Text from "./Draw/Text";
 import Vector2 from "./Maths/Vector2";
 
 type _GridOptions = {
   tileSize?: number;
   color?: Color;
+  showCoordinates?: Boolean;
 };
 
 class Grid {
   #origin: Vector2;
   #size: Vector2;
   #tileSize: number;
+  #zoom: number;
   #color: Color;
+  showCoordinates: Boolean;
 
   constructor(
     origin: Vector2 = new Vector2(),
@@ -24,6 +27,8 @@ class Grid {
     this.#size = size;
     this.#tileSize = gridOptions.tileSize || 0;
     this.#color = gridOptions.color || Color.Grey;
+    this.showCoordinates = gridOptions.showCoordinates || false;
+    this.#zoom = 1;
   }
 
   get size() {
@@ -74,16 +79,17 @@ class Grid {
     this.#size.y = height;
   }
 
-  // get tilesOnX() {
-  //   let tilesOnX = this.width / this.#tileSize;
-  //   return Math.ceil(tilesOnX - (tilesOnX % 2));
-  // }
+  get zoom() {
+    return this.#zoom;
+  }
 
-  // get tilesOnY() {
-  //   let tilesOnY = this.height / this.#tileSize;
-  //   return Math.ceil(tilesOnY - (tilesOnY % 2));
-  // }
+  set zoom(zoom: number) {
+    this.#zoom = MathUtils.clamp(Math.round(zoom * 10) / 10, .1, 10);
+  }
 
+  /**
+ * Get the maximum x coordinate displayed on screen
+ */
   get xMax(): number {
     return this.width / 2;
   }
@@ -108,157 +114,88 @@ class Grid {
   }
 
   draw(ctx: CanvasRenderingContext2D) {
-    this.drawBorders(ctx);
     this.drawHorizontaLines(ctx);
     this.drawVerticalLines(ctx);
   }
 
-  drawBorders(ctx: CanvasRenderingContext2D) {
-    let line = new Line(
-      new Vector2(this.xMin, this.yMin),
-      new Vector2(this.xMin, this.yMax),
-      this.color
-    );
-    line.draw(ctx);
-
-    line.from.x = this.xMax;
-    line.from.y = this.yMax;
-    line.draw(ctx);
-
-    line.to.x = this.xMax;
-    line.to.y = this.yMin;
-    line.draw(ctx);
-
-    line.to.x = this.xMin;
-    line.from.y = this.yMin;
-    line.draw(ctx);
-  }
-
   drawHorizontaLines(ctx: CanvasRenderingContext2D) {
-    let lineCount = 0;
-    for (let i = this.origin.x; i < this.xMax; i += this.tileSize) {
-      let line = new Line(
-        new Vector2(i, this.yMin),
-        new Vector2(i, this.yMax),
-        this.color
-      );
-      this.color.opacity = 0.2;
-      line.thickness = 1;
-      if (lineCount % 5 === 0) {
-        line.color.opacity = 0.5;
-        ctx.font = "10px sans-serif";
-        ctx.fillStyle = "#aaaaaa";
-        ctx.fillText(
-          (i - this.origin.x).toString(),
-          Math.round(i),
-          -this.size.y / 2 - 10
-        );
-        ctx.fillStyle = "#fffffff";
-      }
-      if (lineCount === 0) {
-        line.thickness = 5;
-        line.color.opacity = 1;
-      }
-      line.draw(ctx);
-      lineCount++;
-    }
-    lineCount = 1;
-    for (
-      let i = -this.tileSize + this.origin.x;
-      i > this.xMin;
-      i -= this.tileSize
-    ) {
-      let line = new Line(
-        new Vector2(i, this.yMin),
-        new Vector2(i, this.yMax),
-        this.color
-      );
-      line.thickness = 1;
-      line.color.opacity = 0.2;
-      if (lineCount % 5 === 0) {
-        line.color.opacity = 0.5;
-        ctx.font = "10px sans-serif";
-        ctx.fillStyle = "#aaaaaa";
-        ctx.fillText(
-          (i - this.origin.x).toString(),
-          Math.round(i),
-          -this.size.y / 2 - 10
-        );
-        ctx.fillStyle = "#fffffff";
-      }
-      if (lineCount === 0) {
-        line.color.opacity = 1;
-        line.thickness = 5;
-      }
 
-      line.draw(ctx);
-      lineCount++;
+    let line = new Line(new Vector2(), new Vector2(), this.color, 1);
+    let coordinatesDisplay = new Text("", new Vector2(), this.color);
+    let drawCoordinates = false;
+
+    let min = this.xMin + (this.origin.x - this.xMin) % (this.tileSize * this.zoom);
+    for (let i = min;i < this.xMax;i += (this.tileSize * this.zoom)) {
+      if (MathUtils.isBetween(i, this.xMin, this.xMax)) {
+        i = MathUtils.num(i);
+        line.from = new Vector2(i, this.yMin);
+        line.to = new Vector2(i, this.yMax);
+
+        coordinatesDisplay.text = MathUtils.num((i - this.origin.x) * (1 / this.zoom)).toString();
+        coordinatesDisplay.position = line.from.copy().add(new Vector2(0, 12));
+        drawCoordinates = false;
+
+        // Origin axes
+        if ((i - this.origin.x) === 0) {
+          line.color.opacity = 1;
+          drawCoordinates = true;
+        }
+
+        // Every 5 lines
+        else if ((i - this.origin.x) % (5 * this.tileSize * this.zoom) === 0) {
+          line.color.opacity = .5;
+          drawCoordinates = true;
+        }
+
+        // Default
+        else {
+          line.color.opacity = .3;
+        }
+
+        this.showCoordinates && drawCoordinates && coordinatesDisplay.draw(ctx);
+        line.draw(ctx);
+      }
     }
+
   }
 
   drawVerticalLines(ctx: CanvasRenderingContext2D) {
-    let lineCount = 0;
-    for (let i = this.origin.y; i < this.yMax; i += this.tileSize) {
-      let line = new Line(
-        new Vector2(this.xMin, i),
-        new Vector2(this.xMax, i),
-        this.color
-      );
-      line.color.opacity = 0.2;
-      line.thickness = 1;
-      if (lineCount % 5 === 0) {
-        line.color.opacity = 0.5;
-        ctx.font = "10px sans-serif";
-        ctx.fillStyle = "#aaaaaa";
-        ctx.fillText(
-          (i - this.origin.x).toString(),
-          -this.size.x / 2 - 40,
-          Math.round(i)
-        );
-        ctx.fillStyle = "#fffffff";
-      }
-      if (lineCount === 0) {
-        line.color.opacity = 1;
-        line.thickness = 5;
-      }
-      line.draw(ctx);
-      lineCount++;
-    }
-    lineCount = 1;
-    for (
-      let i = -this.tileSize + this.origin.y;
-      i > this.yMin;
-      i -= this.tileSize
-    ) {
-      if (i >= this.xMin && i <= this.xMax) {
-        let line = new Line(
-          new Vector2(this.xMin, i),
-          new Vector2(this.xMax, i),
-          this.color
-        );
-        line.color.opacity = 0.2;
-        line.thickness = 1;
-        if (lineCount % 5 === 0) {
-          line.color.opacity = 0.5;
-          ctx.font = "10px sans-serif";
-          ctx.fillStyle = "#aaaaaa";
-          ctx.fillText(
-            (i - this.origin.x).toString(),
-            -this.size.x / 2 - 40,
-            Math.round(i)
-          );
-          ctx.fillStyle = "#fffffff";
-          // line.thickness = 4;
-        }
-        if (i * this.tileSize === 0) {
-          line.color = Color.Green;
+    let line = new Line(new Vector2(), new Vector2(), this.color, 1);
+    let coordinatesDisplay = new Text("", new Vector2(), this.color);
+    let drawCoordinates = false;
+
+    let min = this.yMin + (this.origin.y - this.yMin) % (this.tileSize * this.zoom);
+    for (let i = min;i < this.yMax;i += (this.tileSize * this.zoom)) {
+      if (MathUtils.isBetween(i, this.yMin, this.yMax)) {
+        i = MathUtils.num(i);
+        line.from = new Vector2(this.xMin, i);
+        line.to = new Vector2(this.xMax, i);
+
+        coordinatesDisplay.text = MathUtils.num((i - this.origin.y) * (1 / this.zoom)).toString();
+        coordinatesDisplay.position = line.from.copy().add(new Vector2(30, 0));
+        drawCoordinates = false;
+
+        // Origin axes
+        if ((i - this.origin.y) === 0) {
           line.color.opacity = 1;
+          drawCoordinates = true;
         }
+
+        // Every 5 lines
+        else if ((i - this.origin.y) % (5 * this.tileSize * this.zoom) === 0) {
+          line.color.opacity = .5;
+          drawCoordinates = true;
+        }
+
+        // Default
+        else {
+          line.color.opacity = .3;
+        }
+
+        this.showCoordinates && drawCoordinates && coordinatesDisplay.draw(ctx);
         line.draw(ctx);
-        lineCount++;
       }
     }
   }
 }
-
 export default Grid;

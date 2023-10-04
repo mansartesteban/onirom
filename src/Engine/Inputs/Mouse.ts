@@ -1,3 +1,4 @@
+import Engine from "../Engine";
 import Map from "../Map";
 import Vector2 from "../Maths/Vector2";
 
@@ -37,14 +38,7 @@ class Mouse {
     static get position(): Vector2 {
         Mouse.isInitialized();
 
-        return Map.getMapCoordinates(Mouse.#position);
-    }
-
-    /**
-     * Returns the position of the mouse on the screen
-     */
-    static get getScreenPosition(): Vector2 {
-        return Mouse.#position;
+        return Mouse.getMapCoordinates();
     }
 
     /**
@@ -79,6 +73,29 @@ class Mouse {
         Mouse.isInitialized();
 
         Mouse.#onClickCallbacks.push(callback);
+    }
+
+    /**
+     * Transform a coordinates on map to match screen display
+     * @param coordinates To coordinates to be converted
+     * @returns The converted coordinates
+     */
+    static getScreenCoordinates(): Vector2 {
+        Map.isInitilized();
+        return this.#position;
+    }
+
+    /**
+     * Transform a coordinates on screen display to match map
+     * @param coordinates To coordinates to be converted
+     * @returns The converted coordinates
+     */
+    static getMapCoordinates(): Vector2 {
+        Map.isInitilized();
+        return this.#position
+            .copy()
+            .sub(new Vector2(Engine.datas.canvas.clientWidth / 2, Engine.datas.canvas.clientHeight / 2))
+            .add(Map.origin);
     }
 
 }

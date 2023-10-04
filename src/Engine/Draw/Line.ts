@@ -1,8 +1,9 @@
+import { _Drawable } from "../..";
 import Color from "../Color";
 import Vector2 from "../Maths/Vector2";
 import Draw from "./Draw";
 
-class Line {
+class Line implements _Drawable {
   #from: Vector2;
   #to: Vector2;
   #color: Color;

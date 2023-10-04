@@ -108,33 +108,6 @@ class Map {
     }
   }
 
-  /**
-   * Transform a coordinates on map to match screen display
-   * @param coordinates To coordinates to be converted
-   * @returns The converted coordinates
-   */
-  static getScreenCoordinates(coordinates: Vector2 = new Vector2()): Vector2 {
-    Map.isInitilized();
-    return coordinates
-      .copy()
-      .sub(Map.origin)
-      .multiply(new Vector2(1, -1))
-      .add(Map.size.copy().divide(2));
-  }
-
-  /**
-   * Transform a coordinates on screen display to match map
-   * @param coordinates To coordinates to be converted
-   * @returns The converted coordinates
-   */
-  static getMapCoordinates(coordinates: Vector2 = new Vector2()): Vector2 {
-    Map.isInitilized();
-    return coordinates
-      .copy()
-      .sub(Map.size.copy().divide(2))
-      .add(Map.origin)
-      .multiply(new Vector2(1, -1));
-  }
 }
 
 export default Map;

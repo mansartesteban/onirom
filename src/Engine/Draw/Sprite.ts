@@ -1,5 +1,4 @@
 import { _Drawable, _SpriteOptions } from "../..";
-import Map from "../Map";
 import Rotation from "../Maths/Rotation";
 import Vector2 from "../Maths/Vector2";
 
@@ -63,20 +62,18 @@ class Sprite implements _Drawable {
             let displayedWidth = spriteWidth * this.#scale;
             let displayedHeight = spriteHeight * this.#scale;
 
-            let positionOnScreen = Map.getScreenCoordinates(position);
-
             ctx.save();
-            ctx.translate(positionOnScreen.x, positionOnScreen.y);
+            ctx.translate(position.x, position.y);
             ctx.rotate(-rotation.sub(this.#offsetRotation).angle);
-            ctx.translate(-positionOnScreen.x, -positionOnScreen.y);
+            ctx.translate(-position.x, -position.y);
             ctx.drawImage(
                 this.#img,
                 current.x * spriteWidth,
                 current.y * spriteHeight,
                 spriteWidth,
                 spriteHeight,
-                positionOnScreen.x - displayedWidth / 2,
-                positionOnScreen.y - displayedHeight / 2,
+                position.x - displayedWidth / 2,
+                position.y - displayedHeight / 2,
                 displayedWidth,
                 displayedHeight
             );

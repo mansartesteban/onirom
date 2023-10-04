@@ -1,23 +1,7 @@
 import { _EngineDatasTransport } from ".";
-import Color from "./Engine/Color";
-import Circle from "./Engine/Draw/Circle";
-import CircleScreen from "./Engine/Draw/CircleScreen";
 import Engine from "./Engine/Engine";
-import Grid from "./Engine/Grid";
-import Mouse from "./Engine/Inputs/Mouse";
 import Map from "./Engine/Map";
-import Rotation from "./Engine/Maths/Rotation";
-import Vector2 from "./Engine/Maths/Vector2";
-import Time from "./Engine/Time";
-import Timer from "./Engine/Timer";
-import Ant from "./SimulationAnts/Entities/Ant/Ant";
-import Food from "./SimulationAnts/Entities/Food/Food";
 import Scene from "./SimulationAnts/Scene";
-import MathUtils from "./Utils/Math";
-
-const ants: Ant[] = [];
-
-let circle = new CircleScreen(new Vector2(), 10, Color.Red);
 
 export const createApp = (mountOn: string = "") => {
   const app = document.querySelector<HTMLElement>(mountOn);
@@ -32,82 +16,22 @@ export const createApp = (mountOn: string = "") => {
 
     Map.displayGrid();
 
-    // let timer = new Timer();
-
-    // timer.executeEach(Time.OneMilisecond * 1, () => {
-    //   Map.origin = Map.origin.copy().sub(2);
-    //   // Map.grid.tileSize = 20 + Math.cos(Engine.datas.tick / 100) * 5;
-    // });
-
-    Map.grid.origin = new Vector2(-600, -300);
-
-    let grid = new Grid(new Vector2(), new Vector2(500, 500), {
-      color: Color.Green,
-      tileSize: 50,
+    window.addEventListener("click", (e) => {
+      e.preventDefault();
+      Map.grid.zoom += .1;
     });
-
-    grid.draw(Scene.canvas);
-
-    // let eachTen = new CircleScreen(new Vector2(), 1, Color.Green);
-    // let cOriginOfMap = new Circle(Map.origin.copy().add(Map.size), 5, Color.Cyan);
-    // let cOriginOnScreen = new CircleScreen(Map.size, 5, Color.Yellow);
-    Map.drawGrid();
-
-    // cOriginOfMap.draw(Scene.canvas);
-    // cOriginOnScreen.draw(Scene.canvas);
-
-    // for (let i = 0;i < Map.size.x;i++) {
-    //   eachTen.position.x = i;
-    //   eachTen.position.y = Map.size.y / 2;
-    //   if (i % Map.grid.tileSize === 0) {
-    //     eachTen.draw(Scene.canvas);
-    //   }
-    // }
-
-    // for (let i = 0;i < Map.size.y;i++) {
-    //   eachTen.position.y = i;
-    //   eachTen.position.x = Map.size.x / 2;
-    //   if (i % Map.grid.tileSize === 0) {
-    //     eachTen.draw(Scene.canvas);
-    //   }
-    // }
-    // for (let i = 0;i < 30;i++) {
-    //   let ant = new Ant(
-    //     new Vector2(MathUtils.random(Map.xMin, Map.xMax), MathUtils.random(Map.yMin, Map.yMax))
-    //   );
-    //   // ant.transform.acceleration.x = 1;
-    //   Scene.addEntity(ant);
-    //   ants.push(ant);
-    // }
-
-    // for (let i = 0;i < 200;i++) {
-    //   let food = new Food(
-    //     new Vector2(
-    //       MathUtils.random(Map.xMin, Map.xMax),
-    //       MathUtils.random(Map.yMin, Map.yMax)
-    //     )
-    //   );
-    //   Scene.addEntity(food);
-    // }
-
-    // Mouse.onMove(() => {
-    //   ants.forEach(ant => {
-    //     ant.datas.target = ;
-    //   });
-    // });
-
-    // Mouse.onClick(() => {
-    //   circle.position = Mouse.position;
-    // });
+    window.addEventListener("contextmenu", (e) => {
+      e.preventDefault();
+      Map.grid.zoom -= .1;
+    });
 
     return {
       Scene,
     };
   });
 
-  // engine.loop(() => {
-  //   circle.draw(Scene.canvas);
-  // });
+  engine.loop(() => {
+  });
 };
 
 /*
@@ -125,7 +49,6 @@ Simulation fourmis :
 - Corriger le debugVector avec une faible valeur
 
 Général
-- Créer Mouse qui récupère la position sur le screen et qui la translate sur la map
 - Créer une classe animation qui peut gérer la vitesse de l'animation
 - Gérer les actions séquencées (comme ThinMatrix)
 - Créer un assethandler ? Pour éviter d'instancier 1000 fois le render de pheromones ou de food,

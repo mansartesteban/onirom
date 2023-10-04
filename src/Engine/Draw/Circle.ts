@@ -1,9 +1,10 @@
+import { _Drawable } from "../..";
 import Color from "../Color";
 import Rotation from "../Maths/Rotation";
 import Vector2 from "../Maths/Vector2";
 import Draw from "./Draw";
 
-class Circle {
+class Circle implements _Drawable {
 
     #position: Vector2;
     #radius: number;
