@@ -8,7 +8,7 @@ class RenderComponent extends Component {
     }
 
     render(_: Entity) {
-        throw "Classes which extend RenderComponent must implement 'render' method";
+        throw "Classes that extend RenderComponent must implement 'render' method";
     }
 }
 

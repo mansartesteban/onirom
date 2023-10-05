@@ -8,6 +8,7 @@ import Observer from "@core/Observer";
 import Time from "@/Engine/Core/Time/Time";
 import Timer from "@/Engine/Core/Time/Timer";
 import { _EngineDatasTransport, _Updatable } from "@/index";
+import EngineUI from "../UI/EngineUI";
 
 class Engine {
   #app: HTMLElement;
@@ -31,6 +32,28 @@ class Engine {
    * Emits an event when it has finished
    */
   #initializeEngine() {
+
+    // Initialize all third party logic
+    this.#initializeUI();
+    this.#initializeInputs();
+    this.#initializeCanvas();
+    // this.#initializeFpsMeter();
+    this.#initializeMap();
+
+    // Bind all created datas to a global object which traverse the app
+    Engine.#datas.tick = 0;
+
+    // Inidicates that initialization has finished
+    this.#observer.$emit("initialized");
+    Engine.initialized = true;
+  }
+
+  #initializeUI() {
+    EngineUI.setup();
+    EngineUI.mount("#app");
+  }
+
+  #initializeCanvas() {
     // Create base canvas
     const canvas = document.createElement("canvas");
     this.#app.appendChild(canvas);
@@ -45,24 +68,21 @@ class Engine {
     window.addEventListener("resize", () => {
       canvas.width = window.innerWidth;
       canvas.height = window.innerHeight;
-      Map.size = new Vector2(canvas.clientWidth, canvas.clientHeight);
+      // Map.size = new Vector2(canvas.clientWidth, canvas.clientHeight); // TODO: Find a way to communicate coordinates, but not here 
       ctx.translate(Map.size.x / 2, Map.size.y / 2);
     });
 
-    // Create a map to handle coordinate system
-    const mapOptions = {
-      size: new Vector2(canvas.clientWidth, canvas.clientHeight),
-      tileSize: 30
-    };
-    Map.initialize(ctx, mapOptions);
-
     ctx.translate(canvas.clientWidth / 2, canvas.clientHeight / 2);
 
-    // Bind all created datas to a glboal object which traverse the app
     Engine.#datas.canvas = canvas;
     Engine.#datas.canvasContext = ctx;
-    Engine.#datas.tick = 0;
+  }
 
+  #initializeInputs() {
+    Mouse.initialize();
+  }
+
+  #initializeFpsMeter() {
     let fpsTimer = new Timer();
     let lastTick = Engine.#datas.tick;
     fpsTimer.executeEach(Time.OneSecond, () => {
@@ -72,14 +92,18 @@ class Engine {
 
     let timer2 = new Timer();
     timer2.executeEach(Time.OneSecond, () => {
-      // console.info(Engine.datas.fps);
+      console.info(Engine.#datas.fps);
     });
+  }
 
-    Mouse.initialize();
-
-    // Inidicates that initialization has finished
-    this.#observer.$emit("initialized");
-    Engine.initialized = true;
+  // TODO: This has not to be in Engine class, it should depends on a instanciated Scene, but keep it somewhere
+  #initializeMap() {
+    // Create a map to handle coordinate system
+    const mapOptions = {
+      size: new Vector2(Engine.#datas.canvas.clientWidth, Engine.#datas.canvas.clientHeight),
+      tileSize: 30
+    };
+    Map.initialize(Engine.#datas.canvasContext, mapOptions);
   }
 
   /**

@@ -1,5 +1,5 @@
 import Vector2 from "./Engine/Maths/Vector2";
-import Scene from "./Engine/core/Scene";
+import Scene from "@core/Scene";
 
 type _SpriteOptions = {
     columns?: number,
@@ -23,4 +23,8 @@ interface _Updatable {
 
 interface _Drawable {
     draw(ctx: CanvasRenderingContext2D);
+}
+
+interface _UIComponent {
+    render(parent: Element);
 }

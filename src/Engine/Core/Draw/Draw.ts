@@ -60,8 +60,6 @@ class Draw {
         }
       }
     });
-
-    type T = keyof typeof ctx;
   }
 }
 export default Draw;
