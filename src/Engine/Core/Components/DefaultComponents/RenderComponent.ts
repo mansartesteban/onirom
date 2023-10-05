@@ -1,5 +1,5 @@
-import Component from "../Components";
-import Entity from "../Entity";
+import Entity from "@core/Entity";
+import Component from "@core/Components/Component";
 
 class RenderComponent extends Component {
 
@@ -7,7 +7,7 @@ class RenderComponent extends Component {
         this.render(entity);
     }
 
-    render(entity: Entity) {
+    render(_: Entity) {
         throw "Classes which extend RenderComponent must implement 'render' method";
     }
 }

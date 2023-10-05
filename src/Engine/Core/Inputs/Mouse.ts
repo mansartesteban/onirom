@@ -1,6 +1,6 @@
-import Engine from "../Engine";
-import Map from "../Map";
-import Vector2 from "../Maths/Vector2";
+import Engine from "@core/Engine";
+import Map from "@core/Map";
+import Vector2 from "@core/Maths/Vector2";
 
 /**
  * A helper class which handle the mouse positioning on screen or map

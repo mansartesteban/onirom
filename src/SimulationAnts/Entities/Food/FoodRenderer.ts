@@ -1,8 +1,9 @@
-import Color from "../../../Engine/Color";
-import Circle from "../../../Engine/Draw/Circle";
-import Engine from "../../../Engine/Engine";
-import RenderComponent from "../../Components/RenderComponent";
-import Entity from "../../Entity";
+import Color from "@core/Color";
+import Circle from "@core/Draw/Circle";
+import Engine from "@core/Engine";
+import RenderComponent from "@core/Components/DefaultComponents/RenderComponent";
+import Entity from "@core/Entity";
+
 import Food from "./Food";
 
 class FoodRenderer extends RenderComponent {

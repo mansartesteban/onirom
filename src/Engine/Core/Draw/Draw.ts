@@ -1,12 +1,12 @@
-import Color from "../Color";
-import Vector2 from "../Maths/Vector2";
+import Color from "@core/Color";
+import Vector2 from "@core/Maths/Vector2";
 
-const defaultsAttributes = {
+const defaultsAttributes: { [name: string]: any; } = {
   strokeStyle: "#000",
   lineWidth: "1",
   fillStyle: "#000",
 };
-const defaultsMethods = {
+const defaultsMethods: { [name: string]: any; } = {
   setLineDash: [],
 };
 
@@ -40,11 +40,28 @@ class Draw {
 
     properties.forEach((property: string) => {
       if (Object.keys(defaultsAttributes).indexOf(property) !== -1) {
-        ctx[property] = defaultsAttributes[property];
+        switch (property) {
+          case "fillStyle":
+            ctx.fillStyle = defaultsAttributes.fillStyle;
+            break;
+          case "lineWidth":
+            ctx.lineWidth = defaultsAttributes.lineWidth;
+            break;
+          case "strokeStyle":
+            ctx.strokeStyle = defaultsAttributes.strokeStyle;
+            break;
+        }
+
       } else if (Object.keys(defaultsMethods).indexOf(property) !== -1) {
-        ctx[property](defaultsMethods[property]);
+        switch (property) {
+          case "setLineDash":
+            ctx.setLineDash(defaultsMethods.setLineDash);
+            break;
+        }
       }
     });
+
+    type T = keyof typeof ctx;
   }
 }
 export default Draw;

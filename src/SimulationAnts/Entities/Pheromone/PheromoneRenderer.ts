@@ -1,9 +1,9 @@
-import { _EngineDatasTransport } from "../../..";
-import Color from "../../../Engine/Color";
-import Circle from "../../../Engine/Draw/Circle";
-import Engine from "../../../Engine/Engine";
-import MathUtils from "../../../Utils/Math";
-import RenderComponent from "../../Components/RenderComponent";
+import Color from "@core/Color";
+import Circle from "@core/Draw/Circle";
+import Engine from "@core/Engine";
+import MathUtils from "@core/Utils/Math";
+import RenderComponent from "@core/Components/DefaultComponents/RenderComponent";
+
 import Pheromone from "./Pheromone";
 
 class PheromoneRenderer extends RenderComponent {

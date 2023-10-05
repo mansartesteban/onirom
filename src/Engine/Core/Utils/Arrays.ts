@@ -1,4 +1,4 @@
-import MathUtils from "./Math";
+import MathUtils from "@core/Utils/Math";
 
 class ArrayUtils {
 

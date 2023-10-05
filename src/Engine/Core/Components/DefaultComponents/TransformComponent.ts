@@ -1,7 +1,6 @@
-import Rotation from "../../Engine/Maths/Rotation";
-import Vector2 from "../../Engine/Maths/Vector2";
-import Time from "../../Engine/Time";
-import Component from "../Components";
+import Rotation from "@core/Maths/Rotation";
+import Vector2 from "@core/Maths/Vector2";
+import Component from "@core/Components/Component";
 
 class TransformComponent extends Component {
 

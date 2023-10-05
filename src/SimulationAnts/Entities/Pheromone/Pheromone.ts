@@ -1,6 +1,6 @@
-import Map from "../../../Engine/Map";
-import Vector2 from "../../../Engine/Maths/Vector2";
-import Entity from "../../Entity";
+import Vector2 from "@core/Maths/Vector2";
+import Entity from "@core/Entity";
+
 import PheromoneRenderer from "./PheromoneRenderer";
 
 class Pheromone extends Entity {

@@ -1,12 +1,13 @@
-import { _EngineDatasTransport, _Updatable } from "..";
-import Scene from "../SimulationAnts/Scene";
-import Color from "./Color";
-import Mouse from "./Inputs/Mouse";
-import Map from "./Map";
-import Vector2 from "./Maths/Vector2";
-import Observer from "./Observer";
-import Time from "./Time";
-import Timer from "./Timer";
+
+import Scene from "@core/Scene";
+import Color from "@core/Color";
+import Mouse from "@core/Inputs/Mouse";
+import Map from "@core/Map";
+import Vector2 from "@core/Maths/Vector2";
+import Observer from "@core/Observer";
+import Time from "@/Engine/Core/Time/Time";
+import Timer from "@/Engine/Core/Time/Timer";
+import { _EngineDatasTransport, _Updatable } from "@/index";
 
 class Engine {
   #app: HTMLElement;

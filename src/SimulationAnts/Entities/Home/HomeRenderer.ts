@@ -1,5 +1,6 @@
-import Engine from "../../../Engine/Engine";
-import RenderComponent from "../../Components/RenderComponent";
+import Engine from "@core/Engine";
+import RenderComponent from "@core/Components/DefaultComponents/RenderComponent";
+
 import Home from "./Home";
 
 class HomeRenderer extends RenderComponent {

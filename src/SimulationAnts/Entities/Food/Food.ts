@@ -1,7 +1,8 @@
-import Vector2 from "../../../Engine/Maths/Vector2";
-import Entity from "../../Entity";
-import Ant from "../Ant/Ant-Backup";
+import Vector2 from "@core/Maths/Vector2";
+import Entity from "@core/Entity";
+
 import FoodRenderer from "./FoodRenderer";
+import Ant from "../Ant/Ant";
 
 class Food extends Entity {
 

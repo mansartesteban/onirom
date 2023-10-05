@@ -1,7 +1,7 @@
-import { _Drawable } from "../..";
-import Color from "../Color";
-import Vector2 from "../Maths/Vector2";
+import Color from "@core/Color";
+import Vector2 from "@core/Maths/Vector2";
 import Draw from "./Draw";
+import { _Drawable } from "@/index";
 
 class Text implements _Drawable {
 

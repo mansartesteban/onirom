@@ -1,15 +1,12 @@
-import Color from "../../../Engine/Color";
-import Circle from "../../../Engine/Draw/Circle";
-import Engine from "../../../Engine/Engine";
-import Mouse from "../../../Engine/Inputs/Mouse";
-import Map from "../../../Engine/Map";
-import Rotation from "../../../Engine/Maths/Rotation";
-import Vector2 from "../../../Engine/Maths/Vector2";
-import Time from "../../../Engine/Time";
-import Timer from "../../../Engine/Timer";
-import MathUtils from "../../../Utils/Math";
-import Entity from "../../Entity";
-import Scene from "../../Scene";
+
+import Mouse from "@core/Inputs/Mouse";
+import Rotation from "@core/Maths/Rotation";
+import Vector2 from "@core/Maths/Vector2";
+import Time from "@/Engine/Core/Time/Time";
+import Timer from "@/Engine/Core/Time/Timer";
+import Entity from "@core/Entity";
+import Scene from "@core/Scene";
+
 import Food from "../Food/Food";
 import Pheromone from "../Pheromone/Pheromone";
 import AntRenderer from "./AntRenderer";

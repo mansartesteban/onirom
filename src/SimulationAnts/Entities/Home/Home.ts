@@ -1,6 +1,7 @@
-import Engine from "../../../Engine/Engine";
-import Vector2 from "../../../Engine/Maths/Vector2";
-import Entity from "../../Entity";
+import Engine from "@core/Engine";
+import Vector2 from "@core/Maths/Vector2";
+import Entity from "@core/Entity";
+
 import HomeRenderer from "./HomeRenderer";
 
 class Home extends Entity {

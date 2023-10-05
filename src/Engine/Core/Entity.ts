@@ -1,7 +1,7 @@
-import ArrayUtils from "../Utils/Arrays";
-import Component from "./Components";
-import TransformComponent from "./Components/TransformComponent";
-import Scene from "./Scene";
+import ArrayUtils from "@core/Utils/Arrays";
+import Component from "@/Engine/Core/Components/Component";
+import TransformComponent from "@core/Components/DefaultComponents/TransformComponent";
+import Scene from "@core/Scene";
 
 class Entity {
   components: Component[] = [];
@@ -10,7 +10,8 @@ class Entity {
   transform: TransformComponent = new TransformComponent();
 
   constructor(...components: Component[]) {
-    this.components = this.components.concat(this.transform, components);
+    this.components = components;
+    this.components.push(this.transform);
   }
 
   addComponent(component: Component) {

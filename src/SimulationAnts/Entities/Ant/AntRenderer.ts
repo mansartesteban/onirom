@@ -1,9 +1,8 @@
-import Sprite from "../../../Engine/Draw/Sprite";
-import Engine from "../../../Engine/Engine";
-import Map from "../../../Engine/Map";
-import Rotation from "../../../Engine/Maths/Rotation";
-import RenderComponent from "../../Components/RenderComponent";
-import Entity from "../../Entity";
+import Sprite from "@core/Draw/Sprite";
+import Engine from "@core/Engine";
+import Rotation from "@core/Maths/Rotation";
+import RenderComponent from "@core/Components/DefaultComponents/RenderComponent";
+import Entity from "@core/Entity";
 
 class AntRenderer extends RenderComponent {
 

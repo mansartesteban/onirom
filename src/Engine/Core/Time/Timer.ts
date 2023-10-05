@@ -1,5 +1,5 @@
-import Engine from "./Engine";
-import Time from "./Time";
+import Engine from "@core/Engine";
+import Time from "@/Engine/Core/Time/Time";
 
 type _ExecutionItem = { delay: number, repeat: Boolean, callback: Function; lastCall: number; };
 
@@ -54,7 +54,7 @@ class Timer {
             }
         });
 
-        itemsToDelete.forEach((item: number, index: number) => this.executionStack.splice(index, 1));
+        itemsToDelete.forEach((_, index: number) => this.executionStack.splice(index, 1));
     }
 
     update() {

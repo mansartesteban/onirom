@@ -3,6 +3,20 @@
     "target": "ES2020",
     "useDefineForClassFields": true,
     "module": "ESNext",
+    // Aliases
+    // "moduleResolution": "node",
+    "baseUrl": "./",
+    "paths": {
+      "@/*": [
+        "./src/*",
+      ],
+      "@core/*": [
+        "./src/Engine/Core/*"
+      ],
+      "@ui/*": [
+        "./src/UI/*"
+      ],
+    },
     "lib": [
       "ES2020",
       "DOM",

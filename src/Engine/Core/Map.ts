@@ -1,6 +1,5 @@
-import { _EngineDatasTransport, _Updatable } from "..";
-import Grid from "./Grid";
-import Vector2 from "./Maths/Vector2";
+import Grid from "@core/Grid";
+import Vector2 from "@core/Maths/Vector2";
 
 type _MapOptions = {
   size?: Vector2;

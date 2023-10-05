@@ -1,7 +1,7 @@
-import MathUtils from "../../Utils/Math";
-import Color from "../Color";
-import DebugVector from "../Draw/DebugVector";
-import Rotation from "./Rotation";
+import MathUtils from "@core/Utils/Math";
+import Color from "@core/Color";
+import DebugVector from "@core/Draw/DebugVector";
+import Rotation from "@core/Maths/Rotation";
 
 class Vector2 {
   static X: Vector2 = new Vector2(1, 0);

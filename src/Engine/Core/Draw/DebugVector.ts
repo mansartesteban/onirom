@@ -1,9 +1,9 @@
-import { _Drawable } from "../..";
-import MathUtils from "../../Utils/Math";
-import Color from "../Color";
-import Rotation from "../Maths/Rotation";
-import Vector2 from "../Maths/Vector2";
+import MathUtils from "@core/Utils/Math";
+import Color from "@core/Color";
+import Rotation from "@core/Maths/Rotation";
+import Vector2 from "@core/Maths/Vector2";
 import Draw from "./Draw";
+import { _Drawable } from "@/index";
 
 class DebugVector implements _Drawable {
 

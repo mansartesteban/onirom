@@ -1,7 +1,6 @@
-import { _EngineDatasTransport } from ".";
-import Engine from "./Engine/Engine";
-import Map from "./Engine/Map";
-import Scene from "./SimulationAnts/Scene";
+import Engine from "@core/Engine";
+import Map from "@core/Map";
+import Scene from "@core/Scene";
 
 export const createApp = (mountOn: string = "") => {
   const app = document.querySelector<HTMLElement>(mountOn);

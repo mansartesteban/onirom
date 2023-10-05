@@ -1,8 +1,8 @@
-import MathUtils from "../Utils/Math";
-import Color from "./Color";
-import Line from "./Draw/Line";
-import Text from "./Draw/Text";
-import Vector2 from "./Maths/Vector2";
+import MathUtils from "@core/Utils/Math";
+import Color from "@core/Color";
+import Line from "@core/Draw/Line";
+import Text from "@core/Draw/Text";
+import Vector2 from "@core/Maths/Vector2";
 
 type _GridOptions = {
   tileSize?: number;

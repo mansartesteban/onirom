@@ -1,4 +1,4 @@
-import MathUtils from "../Utils/Math";
+import MathUtils from "@core/Utils/Math";
 
 /**
  * A helper class to handle colors with rgba channels

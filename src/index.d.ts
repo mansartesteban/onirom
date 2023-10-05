@@ -1,5 +1,5 @@
 import Vector2 from "./Engine/Maths/Vector2";
-import Scene from "./SimulationAnts/Scene";
+import Scene from "./Engine/core/Scene";
 
 type _SpriteOptions = {
     columns?: number,

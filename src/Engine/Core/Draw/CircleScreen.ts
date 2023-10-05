@@ -1,10 +1,9 @@
-import { _Drawable } from "../..";
-import Color from "../Color";
-import Rotation from "../Maths/Rotation";
-import Vector2 from "../Maths/Vector2";
+import Color from "@core/Color";
+import Rotation from "@core/Maths/Rotation";
+import Vector2 from "@core/Maths/Vector2";
 import Draw from "./Draw";
 
-class Circle implements _Drawable {
+class CircleScreen {
 
     #position: Vector2;
     #radius: number;
@@ -63,15 +62,17 @@ class Circle implements _Drawable {
 
             ctx.fillStyle = this.#color._toString;
 
+            let positionOnScreen = this.#position;
+
             ctx.arc(
-                this.position.x,
-                this.position.y,
+                positionOnScreen.x,
+                positionOnScreen.y,
                 this.#radius,
                 this.#direction.rotation.angle - this.#angle.angle / 2,
                 this.#direction.rotation.angle + this.#angle.angle / 2,
             );
             if (this.#angle.angle % (2 * Math.PI) !== 0) {
-                ctx.lineTo(this.position.x, this.position.y);
+                ctx.lineTo(positionOnScreen.x, positionOnScreen.y);
             }
 
             ctx.fill();
@@ -81,4 +82,4 @@ class Circle implements _Drawable {
     }
 }
 
-export default Circle;
+export default CircleScreen;

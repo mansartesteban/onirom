@@ -1,6 +1,6 @@
-import { _Drawable, _SpriteOptions } from "../..";
-import Rotation from "../Maths/Rotation";
-import Vector2 from "../Maths/Vector2";
+import { _Drawable, _SpriteOptions } from "@/index";
+import Rotation from "@core/Maths/Rotation";
+import Vector2 from "@core/Maths/Vector2";
 
 class Sprite implements _Drawable {
 

@@ -1,4 +1,4 @@
-import Entity from "./Entity";
+import Entity from "@core/Entity";
 
 class Component {
 
@@ -14,7 +14,7 @@ class Component {
         this.update(entity);
     }
 
-    update(entity: Entity) { }
+    update(_: Entity) { }
 }
 
 export default Component;

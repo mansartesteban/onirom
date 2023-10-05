@@ -7,6 +7,7 @@ export default defineConfig({
   resolve: {
     alias: {
       "@": path.join(root, "src"),
+      "@core": path.join(root, "src", "Engine", "Core"),
       "@styles": path.join(root, "public", "assets", "styles"),
     },
   },
