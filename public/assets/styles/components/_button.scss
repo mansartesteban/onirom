@@ -1,0 +1,110 @@
+@use "sass:color";
+
+.btn
+{
+    display: flex;
+    align-items: center;
+    gap: var(--margin-sm);
+    cursor: pointer;
+
+    padding: var(--margin-sm);
+
+    &:hover
+    {
+        background-color: color.adjust($default-color, $lightness: -5%);
+    }
+
+    &:active
+    {
+        background-color: color.adjust($default-color, $lightness: -10%);
+    }
+
+    &.rounded
+    {
+        border-radius: $border-radius-md;
+    }
+
+    &:not(.as-text)
+    {
+        background-color: $default-color;
+
+        &.primary
+        {
+            background-color: $primary-color;
+
+            &:hover
+            {
+                background-color: color.adjust($primary-color, $lightness: -10%, $saturation: -30%);
+            }
+
+            &:active
+            {
+                background-color: color.adjust($primary-color, $lightness: -20%, $saturation: -40%);
+            }
+        }
+
+        &.success
+        {
+            background-color: $success-color;
+            color: $dark-color;
+
+            &:hover
+            {
+                background-color: color.adjust($success-color, $lightness: -10%, $saturation: -10%);
+            }
+
+            &:active
+            {
+                background-color: color.adjust($success-color, $lightness: -20%, $saturation: -20%);
+            }
+        }
+
+        &.warning
+        {
+            background-color: $warning-color;
+            color: $dark-color;
+
+            &:hover
+            {
+                background-color: color.adjust($warning-color, $lightness: -10%, $saturation: -20%);
+            }
+
+            &:active
+            {
+                background-color: color.adjust($warning-color, $lightness: -20%, $saturation: -30%);
+            }
+        }
+
+        &.error
+        {
+            background-color: $error-color;
+
+            &:hover
+            {
+                background-color: color.adjust($error-color, $lightness: -10%, $saturation: -20%);
+            }
+
+            &:active
+            {
+                background-color: color.adjust($error-color, $lightness: -20%, $saturation: -30%);
+            }
+        }
+
+        &.info
+        {
+            background-color: $info-color;
+            color: $dark-color;
+
+            &:hover
+            {
+                background-color: color.adjust($info-color, $lightness: -10%, $saturation: -20%);
+            }
+
+            &:active
+            {
+                background-color: color.adjust($info-color, $lightness: -20%, $saturation: -30%);
+            }
+        }
+    }
+
+}

@@ -14,6 +14,7 @@
   },
   "dependencies": {
     "css-loader": "^6.8.1",
+    "css.gg": "^2.1.1",
     "sass": "^1.68.0",
     "sass-loader": "^13.3.2",
     "style-loader": "^3.3.3"

@@ -1,5 +1,6 @@
 import "@styles/main.scss";
+import "css.gg/icons/icons.css";
 
-import { createApp } from "./App";
+import App from "@/Application/App";
 
-createApp("#app");
+App.launch("#app");

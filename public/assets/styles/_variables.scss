@@ -1,0 +1,40 @@
+$margin-xs: .25rem;
+$margin-sm: .5rem;
+$margin-md: 1rem;
+$margin-lg: 1.25rem;
+$margin-xl: 1.5rem;
+
+:root
+{
+    --margin-xs: #{$margin-xs};
+    --margin-sm: #{$margin-sm};
+    --margin-md: #{$margin-md};
+    --margin-lg: #{$margin-lg};
+    --margin-xl: #{$margin-xl};
+}
+
+$default-color: #333333;
+$primary-color: #17A2B8;
+$success-color: #99C24D;
+$warning-color: #FFA62B;
+$error-color: #FF3C38;
+$info-color: #F16490;
+$dark-color: #212121;
+$light-color: #dddddd;
+
+:root
+{
+    --default-color: #{$default-color};
+    --primary-color: #{$primary-color};
+    --success-color: #{$success-color};
+    --warning-color: #{$warning-color};
+    --error-color: #{$error-color};
+    --info-color: #{$info-color};
+    --dark-color: #{$dark-color};
+}
+
+$border-radius-xs: .1rem;
+$border-radius-sm: .25rem;
+$border-radius-md: .5rem;
+$border-radius-lg: 1rem;
+$border-radius-xl: 1.5rem;

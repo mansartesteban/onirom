@@ -10,11 +10,17 @@
       "@/*": [
         "./src/*",
       ],
-      "@core/*": [
-        "./src/Engine/Core/*"
+      "@gameengine/*": [
+        "./src/Application/GameEngine/*"
       ],
       "@ui/*": [
-        "./src/UI/*"
+        "./src/Application/UI/*"
+      ],
+      "@commons/*": [
+        "./src/Application/Commons/*"
+      ],
+      "@styles/*": [
+        "./src/public/assets/styles/*"
       ],
     },
     "lib": [

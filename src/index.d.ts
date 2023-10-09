@@ -1,7 +1,7 @@
-import Vector2 from "./Engine/Maths/Vector2";
-import Scene from "@core/Scene";
+import Vector2 from "@GameEngine/lib/Maths/Vector2";
+import Scene from "@GameEngine/core/Scene";
 
-type _SpriteOptions = {
+type TSpriteOptions = {
     columns?: number,
     rows?: number,
     count?: number;
@@ -9,7 +9,7 @@ type _SpriteOptions = {
     offsetRotation?: Rotation;
 };
 
-type _EngineDatasTransport = {
+type TEngineDatasTransport = {
     canvas: HTMLElement,
     canvasContext: CanvasRenderingContext2D,
     scene: Scene,
@@ -17,14 +17,24 @@ type _EngineDatasTransport = {
     map: Map;
     fps: number;
 };
-interface _Updatable {
-    update(datas?: _EngineDatasTransport);
+
+type TComponentOptions = {
+    props?: { [name: string]: any; };
+};
+
+interface IUpdatable {
+    update(datas?: TEngineDatasTransport);
 }
 
-interface _Drawable {
+interface IDrawable {
     draw(ctx: CanvasRenderingContext2D);
 }
 
-interface _UIComponent {
+interface IUIComponent {
     render(parent: Element);
+}
+
+interface IRegistry {
+    id: string;
+    register(...item: any): void;
 }
