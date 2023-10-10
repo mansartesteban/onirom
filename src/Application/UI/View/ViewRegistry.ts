@@ -1,6 +1,5 @@
 import { IRegistry } from "@/index";
-import ViewContainerLocation from "./ViewContainerLocation";
-import View from "@ui/Layout/View";
+import View from "@/Application/UI/View/View";
 
 class ViewRegistry implements IRegistry {
 
@@ -12,12 +11,15 @@ class ViewRegistry implements IRegistry {
         this.views = [];
     }
 
-    register(views: View | View[], viewLocation: ViewContainerLocation): void {
+    get(viewIdentifier: string) {
+        return this.views.find((view: View) => view.identifier === viewIdentifier);
+    }
+
+    register(views: View | View[]): void {
         if (!Array.isArray(views)) {
             views = [views];
         }
         views.forEach(view => {
-            view.location = viewLocation;
             this.views.push(view);
         });
     }

@@ -3,23 +3,34 @@ import UIComponent from "@ui/Commons/UIComponent";
 import ViewHeaderToolbarActions from "./ViewHeaderToolbarActions";
 import Icon from "../Icon";
 import Text from "../Text";
-
+type TViewComponentProps = {
+    hasHeader?: Boolean;
+    hasToolbar?: Boolean;
+    hasTabs?: Boolean;
+};
 class ViewHeaderToolbar extends UIComponent implements IUIComponent {
 
-    actions: ViewHeaderToolbarActions;
+    #actions: ViewHeaderToolbarActions;
 
-    constructor() {
+    identifier: string;
+
+    constructor(identifier: string = "default-view", props?: TViewComponentProps) {
         super();
-        this.classname = "view-header-toolbar";
 
-        this.actions = new ViewHeaderToolbarActions();
+        this.props = { ...this.props, ...props };
+        this.classname = "view-header-toolbar";
+        this.identifier = identifier;
+
+        this.#actions = new ViewHeaderToolbarActions();
+
+        this.defineSlot("actions", this.#actions);
     }
 
     makeHtml(): void {
         super.makeHtml();
-        new Icon("chevron-down").render(this.dom);
-        new Text("Toolbar title here").render(this.dom);
-        this.actions.render(this.dom);
+        this.append(new Icon("chevron-down"));
+        this.append(new Text(this.props.title));
+        this.append(this.#actions);
     }
 
 }

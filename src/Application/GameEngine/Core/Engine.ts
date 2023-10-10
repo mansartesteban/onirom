@@ -6,7 +6,7 @@ import Map from "@gameengine/Core/Map";
 import Vector2 from "@gameengine/Lib/Geometry/Vector2";
 import Observer from "@commons/Observer";
 import Time from "@gameengine/Lib/Time/Time";
-import Timer from "@gameengine/Lib/Time/Timer";
+// import Timer from "@gameengine/Lib/Time/Timer";
 import { TEngineDatasTransport, IUpdatable } from "@/index";
 import UI from "@ui/main";
 
@@ -79,19 +79,19 @@ class Engine {
     Mouse.initialize();
   }
 
-  #initializeFpsMeter() {
-    let fpsTimer = new Timer();
-    let lastTick = Engine.#datas.tick;
-    fpsTimer.executeEach(Time.OneSecond, () => {
-      Engine.#datas.fps = Engine.#datas.tick - lastTick;
-      lastTick = Engine.#datas.tick;
-    });
+  // #initializeFpsMeter() {
+  //   let fpsTimer = new Timer();
+  //   let lastTick = Engine.#datas.tick;
+  //   fpsTimer.executeEach(Time.OneSecond, () => {
+  //     Engine.#datas.fps = Engine.#datas.tick - lastTick;
+  //     lastTick = Engine.#datas.tick;
+  //   });
 
-    let timer2 = new Timer();
-    timer2.executeEach(Time.OneSecond, () => {
-      console.info(Engine.#datas.fps);
-    });
-  }
+  //   let timer2 = new Timer();
+  //   timer2.executeEach(Time.OneSecond, () => {
+  //     console.info(Engine.#datas.fps);
+  //   });
+  // }
 
   // TODO: This has not to be in Engine class, it should depends on a instanciated Scene, but keep it somewhere
   #initializeMap() {

@@ -1,4 +1,4 @@
-import { TComponentOptions, IUIComponent } from "@/index";
+import { IUIComponent } from "@/index";
 
 class UIComponent implements IUIComponent {
 
@@ -7,11 +7,20 @@ class UIComponent implements IUIComponent {
     dom: Element;
     parent?: Element;
 
-    options: TComponentOptions;
+    props: { [name: string]: any; } = {};
+    slots: { [name: string]: any; } = {};
+    children: UIComponent[] = [];
 
-    constructor(options?: TComponentOptions) {
-        this.options = options || {};
+    identifier: string = "";
+
+    constructor(props: { [name: string]: any; } = {}) {
+        this.props = props || {};
         this.dom = document.createElement("div");
+        this.defineSlot("default", this);
+    }
+
+    defineSlot(name: string, element: UIComponent) {
+        this.slots[name] = element;
     }
 
     bindContent(element: Element) {
@@ -22,20 +31,28 @@ class UIComponent implements IUIComponent {
     makeHtml() {
         let element = document.createElement("div");
         element.classList.add(this.classname);
-        if (this.innerContent) {
-            element.appendChild(this.innerContent);
-        }
         this.dom = element;
+        this.dom.id = this.identifier;
+    }
+
+    append(element: UIComponent) {
+        this.children.push(element);
     }
 
     render(parent?: Element) {
         this.parent = parent || this.parent;
         if (this.parent) {
             if (this.dom) {
+
+                // If shadow dom node already exists, refresh it
                 if (this.dom.parentElement && this.dom.parentElement === this.parent) {
                     this.parent.removeChild(this.dom);
                 }
                 this.makeHtml();
+                this.children.forEach((child: UIComponent) => {
+                    child.render(this.dom);
+                    this.dom.appendChild(child.dom);
+                });
                 this.parent.appendChild(this.dom);
             }
         }

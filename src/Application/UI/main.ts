@@ -1,11 +1,11 @@
-import AppbarView from "./views/Appbar.view";
-import ContextBarView from "./views/ContextBar.view";
-import SceneView from "./views/Scene.view";
-import BrowserView from "./views/Browser.view";
-import ViewRegistry from "./Layout/ViewRegistry";
-import ViewContainerLocation from "./Layout/ViewContainerLocation";
+import ViewRegistry from "./View/ViewRegistry";
+import ViewContainerLocation from "./View/ViewContainerLocation";
 import Registry from "../Commons/Registry";
-import View from "./Layout/View";
+import View from "./View/View";
+
+import AppbarView from "./DefaultViews/Appbar.view";
+import ActivityBarView from "./DefaultViews/ActivityBar.view";
+import ViewDescriptor from "./View/ViewDescriptor";
 
 
 class UI {
@@ -14,6 +14,11 @@ class UI {
     static mountOn: Element;
 
     static setup() {
+
+        let viewRegistry = new ViewRegistry("views");
+        Registry.add(viewRegistry);
+
+        UI.#loadDefaultLayout();
         UI.#loadDefaultViews();
     }
 
@@ -26,8 +31,7 @@ class UI {
 
     static bind(viewIdentifier: string, element: Element) {
         let viewRegistry = Registry.get("views") as ViewRegistry;
-        let foundView = viewRegistry.views.find((view: View) => view.identifier === viewIdentifier);
-        console.log("found?", foundView);
+        let foundView = viewRegistry.views.find((view: View) => view.descriptor.options.id === viewIdentifier);
         if (foundView) {
             foundView.bindContent(element);
         }
@@ -47,21 +51,47 @@ class UI {
     static render() {
         let viewRegistry = Registry.get("views") as ViewRegistry;
         viewRegistry.views.forEach((view: View) => view.render());
+    }
 
-        UI.mainView = new View("main");
-        UI.mainView.render();
-        viewRegistry.register(UI.mainView, new ViewContainerLocation("#app"));
+    static #loadDefaultLayout() {
+        UI.mainView = new View(new ViewContainerLocation("#app"), new ViewDescriptor({ id: "main", orientation: "horizontal" }));
+
+        let viewRegistry = Registry.get("views") as ViewRegistry;
+        viewRegistry.register(UI.mainView);
+
+        // let menuBar = document.createElement("div");
+        // menuBar.id = "menu-bar";
+        // UI.mainView.bindContent(menuBar);
     }
 
     static #loadDefaultViews() {
-        let viewRegistry = new ViewRegistry("views");
 
-        viewRegistry.register(new AppbarView(), new ViewContainerLocation(""));
-        viewRegistry.register(new ContextBarView(), new ViewContainerLocation(""));
-        viewRegistry.register(new SceneView(), new ViewContainerLocation(""));
-        viewRegistry.register(new BrowserView(), new ViewContainerLocation(""));
+        let viewRegistry = Registry.get("views") as ViewRegistry;
+        viewRegistry.register(
+            new AppbarView(
+                new ViewContainerLocation(UI.mainView),
+                new ViewDescriptor({ id: "appbar", hasHeader: true, title: "Barre d'application" })
+            )
+        );
+        viewRegistry.register(
+            new ActivityBarView(
+                new ViewContainerLocation(UI.mainView),
+                new ViewDescriptor({ id: "activity-bar", hasHeader: true, title: "Barre d'activité" })
+            )
+        );
+        // viewRegistry.register(
+        //     new SceneView(
+        //         new ViewContainerLocation(viewRegistry.get("appbar")),
+        //         new ViewDescriptor({ hasHeader: true })
+        //     )
+        // );
+        // viewRegistry.register(
+        //     new BrowserView(
+        //         new ViewContainerLocation(viewRegistry.get("main")),
+        //         new ViewDescriptor({ hasHeader: true })
+        //     )
+        // );
 
-        Registry.add(viewRegistry);
     }
 
 }

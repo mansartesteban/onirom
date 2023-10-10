@@ -1,12 +1,12 @@
-import View from "../Layout/View";
-import ViewComponent from "@ui/Components/View/View";
+import View from "../View/View";
+import ViewComponent from "../Components/View/View";
 
 
 class AppbarView extends View {
-    constructor() {
-        super("appbar");
+
+    setup() {
         if (this.hasComponent()) {
-            (this.component as ViewComponent).header.toolbar.actions.addActions([{
+            (this.component as ViewComponent).slots.header.slots.toolbar.slots.actions.addActions([{
                 label: "Libellé de l'action",
                 rounded: true,
                 icon: "add",

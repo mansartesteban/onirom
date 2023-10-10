@@ -2,23 +2,38 @@ import { IUIComponent } from "@/index";
 import UIComponent from "@ui/Commons/UIComponent";
 import ViewHeaderTabs from "./ViewHeaderTabs";
 import ViewHeaderToolbar from "./ViewHeaderToolbar";
-
+type TViewComponentProps = {
+    hasHeader?: Boolean;
+    hasToolbar?: Boolean;
+    hasTabs?: Boolean;
+};
 class ViewHeader extends UIComponent implements IUIComponent {
 
-    tabs: ViewHeaderTabs;
-    toolbar: ViewHeaderToolbar;
+    #tabs: ViewHeaderTabs;
+    #toolbar: ViewHeaderToolbar;
 
-    constructor() {
+    identifier: string;
+
+    constructor(identifier: string = "view-header", props?: TViewComponentProps) {
         super();
+
+        this.props = { ...this.props, ...props };
         this.classname = "view-header";
-        this.tabs = new ViewHeaderTabs();
-        this.toolbar = new ViewHeaderToolbar();
+        this.identifier = identifier;
+
+        this.#toolbar = new ViewHeaderToolbar("", this.props);
+        this.#tabs = new ViewHeaderTabs();
+
+        this.defineSlot("toolbar", this.#toolbar);
+        this.defineSlot("tabs", this.#tabs);
+
     }
 
     makeHtml(): void {
         super.makeHtml();
-        this.toolbar.render(this.dom);
-        this.tabs.render(this.dom);
+
+        this.append(this.#toolbar);
+        this.append(this.#tabs);
     }
 }
 
