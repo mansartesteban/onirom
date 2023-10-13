@@ -1,10 +1,12 @@
-import { IUIComponent } from "@/index";
-import UIComponent from "@ui/Commons/UIComponent";
+/// <reference path="View.d.ts" />
+/// <reference path="../../Commons/UI.d.ts" />
 
-class ViewContent extends UIComponent implements IUIComponent {
-    constructor() {
-        super();
-        this.classname = "view-content";
+import VNode from "../../Commons/VNode";
+
+class ViewContent extends VNode implements IVNode {
+    toHtml(): void {
+        super.toHtml();
+        this.classes.push("view-content");
     }
 }
 export default ViewContent;

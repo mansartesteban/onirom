@@ -1,7 +1,8 @@
-import { IUIComponent } from "@/index";
-import UIComponent from "@ui/Commons/UIComponent";
+/// <reference path="../Commons/UI.d.ts" />
 
-class Text extends UIComponent implements IUIComponent {
+import VNode from "../Commons/VNode";
+
+class Text extends VNode implements IVNode {
 
     text: string;
 
@@ -10,9 +11,11 @@ class Text extends UIComponent implements IUIComponent {
         this.text = text;
     }
 
-    makeHtml(): void {
-        super.makeHtml();
-        this.dom.innerHTML = this.text;
+    toHtml(): void {
+        super.toHtml();
+        if (this.dom) {
+            this.dom.innerHTML = this.text;
+        }
     }
 }
 

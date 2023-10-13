@@ -1,5 +1,6 @@
 import Vector2 from "@GameEngine/lib/Maths/Vector2";
 import Scene from "@GameEngine/core/Scene";
+import VNode from "./Application/UI/Commons/VNode";
 
 type TSpriteOptions = {
     columns?: number,
@@ -38,3 +39,7 @@ interface IRegistry {
     id: string;
     register(...item: any): void;
 }
+
+interface ILocalizable {
+    getLocation(): VNode;
+};

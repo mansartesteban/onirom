@@ -11,8 +11,8 @@ class ViewRegistry implements IRegistry {
         this.views = [];
     }
 
-    get(viewIdentifier: string) {
-        return this.views.find((view: View) => view.identifier === viewIdentifier);
+    get(viewName: string) {
+        return this.views.find((view: View) => view.name === viewName);
     }
 
     register(views: View | View[]): void {

@@ -1,17 +1,20 @@
-import ViewContainerLocation from "./ViewContainerLocation";
-import ViewComponent from "@ui/Components/View/View";
+import ViewComponent from "@/Application/UI/Components/View/View";
 import ViewDescriptor from "./ViewDescriptor";
+import NodeLocator from "../Commons/NodeLocator";
 
 class View {
 
-    location?: ViewContainerLocation;
+    location?: NodeLocator;
     descriptor: ViewDescriptor;
-    component?: ViewComponent;
+    component: ViewComponent;
 
-    constructor(location?: ViewContainerLocation, descriptor: ViewDescriptor = new ViewDescriptor) {
+    name: string;
+
+    constructor(location?: NodeLocator, descriptor: ViewDescriptor = new ViewDescriptor) {
+        this.name = descriptor.options.name ?? "default-view";
         this.location = location;
         this.descriptor = descriptor;
-        this.createComponent();
+        this.component = new ViewComponent(this.descriptor?.options);
         this.setup();
     }
 
@@ -19,23 +22,6 @@ class View {
 
     hasComponent() {
         return !!this.component;
-    }
-
-    bindContent(element: Element) {
-        if (this.hasComponent()) {
-            (this.component as ViewComponent).slots.default?.bindContent(element);
-        }
-    }
-
-    getContainer(): Element {
-        if (!this.hasComponent()) {
-            throw "No component found for the view " + this.descriptor.options.id;
-        }
-        return (this.component as ViewComponent).slots.content?.dom;
-    }
-
-    createComponent() {
-        this.component = new ViewComponent(this.descriptor.options.id, this.descriptor?.options);
     }
 
     render() {

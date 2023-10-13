@@ -1,36 +1,30 @@
-import { IUIComponent } from "@/index";
-import UIComponent from "@ui/Commons/UIComponent";
+/// <reference path="View.d.ts" />
+/// <reference path="../../Commons/UI.d.ts" />
+
 import ViewHeaderToolbarActions from "./ViewHeaderToolbarActions";
 import Icon from "../Icon";
 import Text from "../Text";
-type TViewComponentProps = {
-    hasHeader?: Boolean;
-    hasToolbar?: Boolean;
-    hasTabs?: Boolean;
-};
-class ViewHeaderToolbar extends UIComponent implements IUIComponent {
+import VNode from "../../Commons/VNode";
+
+class ViewHeaderToolbar extends VNode implements IVNode {
 
     #actions: ViewHeaderToolbarActions;
 
-    identifier: string;
-
-    constructor(identifier: string = "default-view", props?: TViewComponentProps) {
-        super();
-
-        this.props = { ...this.props, ...props };
-        this.classname = "view-header-toolbar";
-        this.identifier = identifier;
+    constructor(props?: TViewComponentProps) {
+        super(props);
 
         this.#actions = new ViewHeaderToolbarActions();
 
         this.defineSlot("actions", this.#actions);
     }
 
-    makeHtml(): void {
-        super.makeHtml();
-        this.append(new Icon("chevron-down"));
-        this.append(new Text(this.props.title));
-        this.append(this.#actions);
+    toHtml(): void {
+        super.toHtml();
+        this.classes.push("view-header-toolbar");
+
+        this.add(new Icon("chevron-down"));
+        this.add(new Text(this.props.title));
+        this.add(this.#actions);
     }
 
 }

@@ -1,12 +1,12 @@
-import UIComponent from "./UIComponent";
+import VNode from "./VNode";
 
 class Slot {
     name: string;
-    element: UIComponent;
+    node: VNode;
 
-    constructor(name: string = "", element: UIComponent) {
+    constructor(name: string = "", node: VNode) {
         this.name = name;
-        this.element = element;
+        this.node = node;
     }
 
 

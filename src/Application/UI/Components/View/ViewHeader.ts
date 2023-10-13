@@ -1,39 +1,31 @@
-import { IUIComponent } from "@/index";
-import UIComponent from "@ui/Commons/UIComponent";
+/// <reference path="View.d.ts" />
+/// <reference path="../../Commons/UI.d.ts" />
+
 import ViewHeaderTabs from "./ViewHeaderTabs";
 import ViewHeaderToolbar from "./ViewHeaderToolbar";
-type TViewComponentProps = {
-    hasHeader?: Boolean;
-    hasToolbar?: Boolean;
-    hasTabs?: Boolean;
-};
-class ViewHeader extends UIComponent implements IUIComponent {
+import VNode from "../../Commons/VNode";
+
+class ViewHeader extends VNode implements IVNode {
 
     #tabs: ViewHeaderTabs;
     #toolbar: ViewHeaderToolbar;
 
-    identifier: string;
+    constructor(props?: TViewComponentProps) {
+        super(props);
 
-    constructor(identifier: string = "view-header", props?: TViewComponentProps) {
-        super();
-
-        this.props = { ...this.props, ...props };
-        this.classname = "view-header";
-        this.identifier = identifier;
-
-        this.#toolbar = new ViewHeaderToolbar("", this.props);
+        this.#toolbar = new ViewHeaderToolbar(props);
         this.#tabs = new ViewHeaderTabs();
 
         this.defineSlot("toolbar", this.#toolbar);
         this.defineSlot("tabs", this.#tabs);
-
     }
 
-    makeHtml(): void {
-        super.makeHtml();
+    toHtml(): void {
+        super.toHtml();
+        this.classes.push("view-header");
 
-        this.append(this.#toolbar);
-        this.append(this.#tabs);
+        this.add(this.#toolbar);
+        this.add(this.#tabs);
     }
 }
 

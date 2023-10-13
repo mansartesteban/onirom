@@ -1,11 +1,10 @@
-import { IUIComponent } from "@/index";
-import UIComponent from "@ui/Commons/UIComponent";
+/// <reference path="View.d.ts" />
+/// <reference path="../../Commons/UI.d.ts" />
 
-class ViewHeaderTabs extends UIComponent implements IUIComponent {
-    constructor() {
-        super();
-        this.classname = "view-header-tabs";
-    }
+import VNode from "../../Commons/VNode";
+
+class ViewHeaderTabs extends VNode implements IVNode {
+
 }
 
 export default ViewHeaderTabs;

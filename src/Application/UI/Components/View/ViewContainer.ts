@@ -1,12 +1,10 @@
-import { IUIComponent } from "@/index";
-import UIComponent from "@ui/Commons/UIComponent";
+/// <reference path="View.d.ts" />
+/// <reference path="../../Commons/UI.d.ts" />
 
-class ViewContainer extends UIComponent implements IUIComponent {
+import VNode from "../../Commons/VNode";
 
-    constructor() {
-        super();
-        this.classname = "view-container";
-    }
+class ViewContainer extends VNode implements IVNode {
+
 }
 
 export default ViewContainer;

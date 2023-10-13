@@ -1,99 +1,114 @@
+/// <reference path="./Commons/UI.d.ts" />
+
 import ViewRegistry from "./View/ViewRegistry";
-import ViewContainerLocation from "./View/ViewContainerLocation";
+import ViewContainerLocation from "./View/ViewLocator";
 import Registry from "../Commons/Registry";
 import View from "./View/View";
 
 import AppbarView from "./DefaultViews/Appbar.view";
 import ActivityBarView from "./DefaultViews/ActivityBar.view";
 import ViewDescriptor from "./View/ViewDescriptor";
-
+import VNode from "./Commons/VNode";
+import NodeLocator from "./Commons/NodeLocator";
+import VNodeRegistry from "./Commons/VNodeRegistry";
+import VMount from "./Commons/VMount";
+import ViewLocator from "./View/ViewLocator";
+import SceneView from "./DefaultViews/Scene.view";
+import BrowserView from "./DefaultViews/Browser.view";
 
 class UI {
 
     static mainView: View;
-    static mountOn: Element;
+    static mainNode: VNode;
+    static mountOn: VMount;
 
     static setup() {
 
         let viewRegistry = new ViewRegistry("views");
         Registry.add(viewRegistry);
+        let nodeRegistry = new VNodeRegistry("vnode");
+        Registry.add(nodeRegistry);
 
         UI.#loadDefaultLayout();
         UI.#loadDefaultViews();
     }
 
     static mount(token: string | Element) {
-        let target = UI.findElement(token);
-
-        UI.mountOn = target;
+        UI.mountOn = new VMount(token);
         UI.render();
     }
 
-    static bind(viewIdentifier: string, element: Element) {
-        let viewRegistry = Registry.get("views") as ViewRegistry;
-        let foundView = viewRegistry.views.find((view: View) => view.descriptor.options.id === viewIdentifier);
-        if (foundView) {
-            foundView.bindContent(element);
-        }
-    }
-
-    static findElement(token: string | Element): Element {
-        if (typeof token === "string") {
-            let found = document.querySelector(token);
-            if (!found) {
-                throw "Unable to mount UI on #app, element not found";
-            }
-            return found;
-        }
-        return token;
-    }
+    // static bind(viewIdentifier: string, element: Element) {
+    //     // let viewRegistry = Registry.get("views") as ViewRegistry;
+    //     // let foundView = viewRegistry.views.find((view: View) => view.descriptor.options.id === viewIdentifier);
+    //     // if (foundView) {
+    //     //     foundView.bindContent(element);
+    //     // }
+    // }
 
     static render() {
+        UI.mainNode = new VNode();
+        UI.mainNode.dom = UI.mountOn.getElement();
+
+        UI.mainNode.dom?.appendChild(document.createElement("div"));
         let viewRegistry = Registry.get("views") as ViewRegistry;
         viewRegistry.views.forEach((view: View) => view.render());
     }
 
     static #loadDefaultLayout() {
-        UI.mainView = new View(new ViewContainerLocation("#app"), new ViewDescriptor({ id: "main", orientation: "horizontal" }));
+        UI.mainView = new View(new NodeLocator(new VMount("#app")), new ViewDescriptor({ name: "main", orientation: "horizontal" }));
 
         let viewRegistry = Registry.get("views") as ViewRegistry;
         viewRegistry.register(UI.mainView);
 
         // let menuBar = document.createElement("div");
         // menuBar.id = "menu-bar";
-        // UI.mainView.bindContent(menuBar);
+        // UI.mainView.append(menuBar);
     }
 
     static #loadDefaultViews() {
 
+
+
         let viewRegistry = Registry.get("views") as ViewRegistry;
         viewRegistry.register(
             new AppbarView(
-                new ViewContainerLocation(UI.mainView),
-                new ViewDescriptor({ id: "appbar", hasHeader: true, title: "Barre d'application" })
+                new ViewLocator("main"),
+                new ViewDescriptor({ name: "appbar", hasHeader: true, title: "Barre d'application" })
             )
         );
         viewRegistry.register(
             new ActivityBarView(
-                new ViewContainerLocation(UI.mainView),
-                new ViewDescriptor({ id: "activity-bar", hasHeader: true, title: "Barre d'activité" })
+                new ViewLocator("main"),
+                new ViewDescriptor({ name: "activity-bar", hasHeader: true, title: "Barre d'activité" })
             )
         );
-        // viewRegistry.register(
-        //     new SceneView(
-        //         new ViewContainerLocation(viewRegistry.get("appbar")),
-        //         new ViewDescriptor({ hasHeader: true })
-        //     )
-        // );
-        // viewRegistry.register(
-        //     new BrowserView(
-        //         new ViewContainerLocation(viewRegistry.get("main")),
-        //         new ViewDescriptor({ hasHeader: true })
-        //     )
-        // );
+        viewRegistry.register(
+            new SceneView(
+                new ViewLocator("activity-bar"),
+                new ViewDescriptor({ name: "scene", title: "♫ La scène, la scèène, la scèèène !", hasHeader: true })
+            )
+        );
+        viewRegistry.register(
+            new BrowserView(
+                new ViewLocator("activity-bar"),
+                new ViewDescriptor({ name: "browser", hasHeader: false })
+            )
+        );
 
     }
 
 }
 
 export default UI;
+
+
+/*
+
+TODO:
+- Changer le nom de la class XXXLocation en XXXLocator
+- Créer un locator générique pour trouver un VNODE
+- Créer un locator spécifique aux Views qui renverrons leur VNode
+- Appliquer un nom sur une View ("views.appbar")
+- Chercher via ce nom pour le ViewLocator
+*/

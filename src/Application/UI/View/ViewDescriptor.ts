@@ -1,11 +1,11 @@
 type TViewDescriptorOptions = {
-    orientation?: string;
+    orientation?: "horizontal" | "vertical";
     position?: number,
     hasHeader?: Boolean;
     hasToolbar?: Boolean;
     hasTabs?: Boolean;
     title?: string;
-    id: string;
+    name: string;
 };
 
 const defaultOptions: TViewDescriptorOptions = {
@@ -15,7 +15,7 @@ const defaultOptions: TViewDescriptorOptions = {
     hasHeader: false,
     hasToolbar: false,
     hasTabs: false,
-    id: ""
+    name: ""
 };
 
 class ViewDescriptor {

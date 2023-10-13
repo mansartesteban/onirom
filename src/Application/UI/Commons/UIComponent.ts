@@ -28,7 +28,7 @@ class UIComponent implements IUIComponent {
         this.render();
     }
 
-    makeHtml() {
+    toHtml() {
         let element = document.createElement("div");
         element.classList.add(this.classname);
         this.dom = element;
@@ -48,7 +48,7 @@ class UIComponent implements IUIComponent {
                 if (this.dom.parentElement && this.dom.parentElement === this.parent) {
                     this.parent.removeChild(this.dom);
                 }
-                this.makeHtml();
+                this.toHtml();
                 this.children.forEach((child: UIComponent) => {
                     child.render(this.dom);
                     this.dom.appendChild(child.dom);

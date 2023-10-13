@@ -1,43 +1,37 @@
-import { IUIComponent } from "@/index";
-import UIComponent from "@ui/Commons/UIComponent";
+/// <reference path="View.d.ts" />
+/// <reference path="../../Commons/UI.d.ts" />
+
 import ViewHeader from "./ViewHeader";
 import ViewContent from "./ViewContent";
-type TViewComponentProps = {
-    hasHeader?: Boolean;
-    hasToolbar?: Boolean;
-    hasTabs?: Boolean;
-    title?: string;
-};
-class View extends UIComponent implements IUIComponent {
+import VNode from "../../Commons/VNode";
+
+class View extends VNode implements IVNode {
 
     #header: ViewHeader;
     #content: ViewContent;
 
-    identifier: string;
+    constructor(props?: TProps) {
+        super(props);
 
-    constructor(identifier: string = "default-view", props?: TViewComponentProps) {
-        super();
-
-        this.props = { ...this.props, ...props };
-        this.classname = "view";
-        this.identifier = identifier;
-
-        this.#header = new ViewHeader("", this.props);
-        this.#content = new ViewContent();
+        this.#header = new ViewHeader(this.props);
+        this.#content = new ViewContent({ orientation: this.props.orientation });
 
         this.defineSlot("header", this.#header);
         this.defineSlot("content", this.#content);
 
     }
 
-    makeHtml() {
-        super.makeHtml();
+    toHtml() {
+        super.toHtml();
+
+        this.classes.push("view", this.props.orientation || "vertical");
 
         if (this.props.hasHeader) {
-            this.append(this.#header);
+            this.add(this.#header);
         }
 
-        this.append(this.#content);
+
+        this.add(this.#content);
     }
 
 }

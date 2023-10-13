@@ -1,7 +1,8 @@
-import { IUIComponent } from "@/index";
-import UIComponent from "@ui/Commons/UIComponent";
+/// <reference path="../Commons/UI.d.ts" />
 
-class Icon extends UIComponent implements IUIComponent {
+import VNode from "../Commons/VNode";
+
+class Icon extends VNode implements IVNode {
 
     iconName: string;
 
@@ -10,7 +11,7 @@ class Icon extends UIComponent implements IUIComponent {
         this.iconName = iconName.startsWith("gg-") ? iconName : "gg-" + iconName;
     }
 
-    makeHtml(): void {
+    toHtml(): void {
         this.dom = document.createElement("i");
         this.dom.classList.add(this.iconName);
     }

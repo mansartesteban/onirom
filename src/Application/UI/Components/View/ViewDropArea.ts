@@ -1,11 +1,10 @@
-import { IUIComponent } from "@/index";
-import UIComponent from "@ui/Commons/UIComponent";
+/// <reference path="View.d.ts" />
+/// <reference path="../../Commons/UI.d.ts" />
 
-class ViewDropArea extends UIComponent implements IUIComponent {
-    constructor() {
-        super();
-        this.classname = "view-drop-area";
-    }
+import VNode from "../../Commons/VNode";
+
+class ViewDropArea extends VNode implements IVNode {
+
 }
 
 export default ViewDropArea;

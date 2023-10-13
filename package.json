@@ -9,6 +9,7 @@
     "preview": "vite preview"
   },
   "devDependencies": {
+    "@types/uuid": "^9.0.5",
     "typescript": "^5.0.2",
     "vite": "^4.4.5"
   },
@@ -17,6 +18,7 @@
     "css.gg": "^2.1.1",
     "sass": "^1.68.0",
     "sass-loader": "^13.3.2",
-    "style-loader": "^3.3.3"
+    "style-loader": "^3.3.3",
+    "uuid": "^9.0.1"
   }
 }

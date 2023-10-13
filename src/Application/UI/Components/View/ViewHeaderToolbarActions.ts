@@ -1,6 +1,8 @@
-import { IUIComponent } from "@/index";
-import UIComponent from "@ui/Commons/UIComponent";
+/// <reference path="View.d.ts" />
+/// <reference path="../../Commons/UI.d.ts" />
+
 import Button from "../Button";
+import VNode from "../../Commons/VNode";
 
 type _UIAction = {
     label?: string;
@@ -11,28 +13,24 @@ type _UIAction = {
     asText?: Boolean;
 };
 
-class ViewHeaderToolbarActions extends UIComponent implements IUIComponent {
+class ViewHeaderToolbarActions extends VNode implements IVNode {
 
     #actions: _UIAction[] = [];
-
-    constructor() {
-        super();
-        this.classname = "view-header-toolbar-actions";
-    }
 
     addActions(action: _UIAction | _UIAction[]) {
         if (!Array.isArray(action)) {
             action = [action];
         }
         action.forEach(action => this.#actions.push(action));
-        this.render();
     }
 
-    makeHtml(): void {
-        super.makeHtml();
+    toHtml(): void {
+        super.toHtml();
         this.#actions.forEach((action: _UIAction) => {
-            new Button({ props: action }).render(this.dom);
+            this.add(new Button(action));
         });
+
+        this.classes.push("view-header-toolbar-actions");
     }
 }
 

@@ -1,17 +1,18 @@
 import View from "../View/View";
 import ViewComponent from "../Components/View/View";
+import ViewHeaderToolbarActions from "../Components/View/ViewHeaderToolbarActions";
 
 
 class AppbarView extends View {
 
     setup() {
         if (this.hasComponent()) {
-            (this.component as ViewComponent).slots.header.slots.toolbar.slots.actions.addActions([{
+            ((this.component as ViewComponent).slots.header.slots.toolbar.slots.actions as ViewHeaderToolbarActions).addActions([{
                 label: "Libellé de l'action",
                 rounded: true,
                 icon: "add",
                 command: () => {
-                    console.log("clicked !");
+                    console.info("clicked !");
                 }
             }, {
                 label: "Libellé de l'action",
@@ -19,7 +20,7 @@ class AppbarView extends View {
                 icon: "add",
                 severity: "primary",
                 command: () => {
-                    console.log("clicked !");
+                    console.info("clicked !");
                 }
             }, {
                 label: "Libellé de l'action",
@@ -27,7 +28,7 @@ class AppbarView extends View {
                 icon: "add",
                 severity: "success",
                 command: () => {
-                    console.log("clicked !");
+                    console.info("clicked !");
                 }
             }, {
                 label: "Libellé de l'action",
@@ -35,7 +36,7 @@ class AppbarView extends View {
                 rounded: true,
                 severity: "warning",
                 command: () => {
-                    console.log("clicked !");
+                    console.info("clicked !");
                 }
             }, {
                 label: "Libellé de l'action",
@@ -43,7 +44,7 @@ class AppbarView extends View {
                 icon: "add",
                 severity: "error",
                 command: () => {
-                    console.log("clicked !");
+                    console.info("clicked !");
                 }
             }, {
                 label: "Libellé de l'action",
@@ -51,7 +52,7 @@ class AppbarView extends View {
                 icon: "add",
                 severity: "info",
                 command: () => {
-                    console.log("clicked !");
+                    console.info("clicked !");
                 }
             }, {
                 label: "Libellé de l'action",
@@ -59,7 +60,7 @@ class AppbarView extends View {
                 icon: "add",
                 asText: true,
                 command: () => {
-                    console.log("clicked !");
+                    console.info("clicked !");
                 }
             }]);
         }
