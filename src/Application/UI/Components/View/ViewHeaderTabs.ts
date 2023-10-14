@@ -3,8 +3,6 @@
 
 import VNode from "../../Commons/VNode";
 
-class ViewHeaderTabs extends VNode implements IVNode {
-
-}
+class ViewHeaderTabs extends VNode implements IVNode {}
 
 export default ViewHeaderTabs;

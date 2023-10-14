@@ -1,7 +1,6 @@
 /// <reference path="./Commons/UI.d.ts" />
 
 import ViewRegistry from "./View/ViewRegistry";
-import ViewContainerLocation from "./View/ViewLocator";
 import Registry from "../Commons/Registry";
 import View from "./View/View";
 
@@ -17,91 +16,94 @@ import SceneView from "./DefaultViews/Scene.view";
 import BrowserView from "./DefaultViews/Browser.view";
 
 class UI {
+  static mainView: View;
+  static mainNode: VNode;
+  static mountOn: VMount;
 
-    static mainView: View;
-    static mainNode: VNode;
-    static mountOn: VMount;
+  static setup() {
+    let viewRegistry = new ViewRegistry("views");
+    Registry.add(viewRegistry);
+    let nodeRegistry = new VNodeRegistry("vnode");
+    Registry.add(nodeRegistry);
 
-    static setup() {
+    UI.#loadDefaultLayout();
+    UI.#loadDefaultViews();
+  }
 
-        let viewRegistry = new ViewRegistry("views");
-        Registry.add(viewRegistry);
-        let nodeRegistry = new VNodeRegistry("vnode");
-        Registry.add(nodeRegistry);
+  static mount(token: string | Element) {
+    UI.mountOn = new VMount(token);
+    UI.render();
+  }
 
-        UI.#loadDefaultLayout();
-        UI.#loadDefaultViews();
-    }
+  static render() {
+    UI.mainNode = new VNode();
+    UI.mainNode.dom = UI.mountOn.getElement();
 
-    static mount(token: string | Element) {
-        UI.mountOn = new VMount(token);
-        UI.render();
-    }
+    // UI.mainNode.dom?.appendChild(document.createElement("div"));
+    let viewRegistry = Registry.get("views") as ViewRegistry;
+    viewRegistry.views.forEach((view: View) => view.render());
+  }
 
-    // static bind(viewIdentifier: string, element: Element) {
-    //     // let viewRegistry = Registry.get("views") as ViewRegistry;
-    //     // let foundView = viewRegistry.views.find((view: View) => view.descriptor.options.id === viewIdentifier);
-    //     // if (foundView) {
-    //     //     foundView.bindContent(element);
-    //     // }
+  static #loadDefaultLayout() {
+    UI.mainView = new View(
+      new NodeLocator(new VMount("#app")),
+      new ViewDescriptor({ name: "main", orientation: "horizontal" })
+    );
+
+    let viewRegistry = Registry.get("views") as ViewRegistry;
+    viewRegistry.register(UI.mainView);
+
+    // let menuBar = document.createElement("div");
+    // menuBar.id = "menu-bar";
+    // UI.mainView.append(menuBar);
+  }
+
+  static #loadDefaultViews() {
+    let viewRegistry = Registry.get("views") as ViewRegistry;
+    viewRegistry.register(
+      new AppbarView(
+        new ViewLocator("main"),
+        new ViewDescriptor({
+          name: "appbar",
+          hasHeader: true,
+          title: "Barre d'application",
+          //   maxActions: 2, //TODO:
+        })
+      )
+    );
+    // viewRegistry.register(
+    //   new ActivityBarView(
+    //     new ViewLocator("main"),
+    //     new ViewDescriptor({
+    //       name: "activity-bar",
+    //       hasHeader: true,
+    //       title: "Barre d'activité",
+    //     })
+    //   )
+    // );
+    // viewRegistry.register(
+    //   new SceneView(
+    //     new ViewLocator("activity-bar"),
+    //     new ViewDescriptor({
+    //       name: "scene",
+    //       title: "♫ La scène, la scèène, la scèèène !",
+    //       hasHeader: true,
+    //     })
+    //   )
+    // );
+
+    // for (let i = 0; i < 5; i++) {
+    //   viewRegistry.register(
+    //     new BrowserView(
+    //       new ViewLocator("activity-bar"),
+    //       new ViewDescriptor({ name: "browser", hasHeader: false })
+    //     )
+    //   );
     // }
-
-    static render() {
-        UI.mainNode = new VNode();
-        UI.mainNode.dom = UI.mountOn.getElement();
-
-        UI.mainNode.dom?.appendChild(document.createElement("div"));
-        let viewRegistry = Registry.get("views") as ViewRegistry;
-        viewRegistry.views.forEach((view: View) => view.render());
-    }
-
-    static #loadDefaultLayout() {
-        UI.mainView = new View(new NodeLocator(new VMount("#app")), new ViewDescriptor({ name: "main", orientation: "horizontal" }));
-
-        let viewRegistry = Registry.get("views") as ViewRegistry;
-        viewRegistry.register(UI.mainView);
-
-        // let menuBar = document.createElement("div");
-        // menuBar.id = "menu-bar";
-        // UI.mainView.append(menuBar);
-    }
-
-    static #loadDefaultViews() {
-
-
-
-        let viewRegistry = Registry.get("views") as ViewRegistry;
-        viewRegistry.register(
-            new AppbarView(
-                new ViewLocator("main"),
-                new ViewDescriptor({ name: "appbar", hasHeader: true, title: "Barre d'application" })
-            )
-        );
-        viewRegistry.register(
-            new ActivityBarView(
-                new ViewLocator("main"),
-                new ViewDescriptor({ name: "activity-bar", hasHeader: true, title: "Barre d'activité" })
-            )
-        );
-        viewRegistry.register(
-            new SceneView(
-                new ViewLocator("activity-bar"),
-                new ViewDescriptor({ name: "scene", title: "♫ La scène, la scèène, la scèèène !", hasHeader: true })
-            )
-        );
-        viewRegistry.register(
-            new BrowserView(
-                new ViewLocator("activity-bar"),
-                new ViewDescriptor({ name: "browser", hasHeader: false })
-            )
-        );
-
-    }
-
+  }
 }
 
 export default UI;
-
 
 /*
 
