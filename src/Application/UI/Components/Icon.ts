@@ -3,18 +3,18 @@
 import VNode from "../Commons/VNode";
 
 class Icon extends VNode implements IVNode {
+  iconName: string;
 
-    iconName: string;
+  constructor(iconName: string = "close-r") {
+    super();
+    this.iconName = iconName.startsWith("gg-") ? iconName : "gg-" + iconName;
+  }
 
-    constructor(iconName: string = "close-r") {
-        super();
-        this.iconName = iconName.startsWith("gg-") ? iconName : "gg-" + iconName;
-    }
-
-    toHtml(): void {
-        this.dom = document.createElement("i");
-        this.dom.classList.add(this.iconName);
-    }
+  toHtml(): Element {
+    let dom = this.createElement("i");
+    dom.classList.add(this.iconName);
+    return dom;
+  }
 }
 
 export default Icon;

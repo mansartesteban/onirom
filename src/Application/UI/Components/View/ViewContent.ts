@@ -4,9 +4,9 @@
 import VNode from "../../Commons/VNode";
 
 class ViewContent extends VNode implements IVNode {
-    toHtml(): void {
-        super.toHtml();
-        this.classes.push("view-content");
-    }
+  toHtml(): Element {
+    this.classes.push("view-content");
+    return this.createElement();
+  }
 }
 export default ViewContent;

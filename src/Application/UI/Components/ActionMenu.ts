@@ -2,31 +2,32 @@ import VNode from "../Commons/VNode";
 import Button from "./Button";
 
 class ActionMenu extends VNode {
+  constructor(props?: TProps) {
+    super(props);
 
-    constructor(props?: TProps) {
-        super(props);
+    this.defineProps({
+      items: {
+        type: Array,
+        default: () => [],
+      },
+      maxActions: {
+        type: Number,
+        default: 3,
+      },
+    });
+    this.classes.push("action-menu");
+  }
 
-        this.defineProps({
-            items: {
-                type: Array,
-                default: () => []
-            },
-            maxActions: {
-                type: Number,
-                default: 3
-            }
+  toHtml(): Element {
+    if (this.props.maxActions) {
+      this.props.items
+        .slice(0, this.props.maxActions)
+        .forEach((item: TProps) => {
+          this.add(new Button(item));
         });
-        this.classes.push("action-menu");
     }
-
-    toHtml(): void {
-        super.toHtml();
-        if (this.props.maxActions) {
-            this.props.items.slice(0, this.props.maxActions).forEach((item: TProps) => {
-                this.add(new Button(item));
-            });
-        }
-    }
+    return this.createElement();
+  }
 }
 
 export default ActionMenu;

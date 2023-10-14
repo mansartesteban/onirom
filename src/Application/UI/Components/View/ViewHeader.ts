@@ -6,27 +6,26 @@ import ViewHeaderToolbar from "./ViewHeaderToolbar";
 import VNode from "../../Commons/VNode";
 
 class ViewHeader extends VNode implements IVNode {
+  #tabs: ViewHeaderTabs;
+  #toolbar: ViewHeaderToolbar;
 
-    #tabs: ViewHeaderTabs;
-    #toolbar: ViewHeaderToolbar;
+  constructor(props?: TViewComponentProps) {
+    super(props);
 
-    constructor(props?: TViewComponentProps) {
-        super(props);
+    this.#toolbar = new ViewHeaderToolbar(props);
+    this.#tabs = new ViewHeaderTabs();
 
-        this.#toolbar = new ViewHeaderToolbar(props);
-        this.#tabs = new ViewHeaderTabs();
+    this.defineSlot("toolbar", this.#toolbar);
+    this.defineSlot("tabs", this.#tabs);
+  }
 
-        this.defineSlot("toolbar", this.#toolbar);
-        this.defineSlot("tabs", this.#tabs);
-    }
+  toHtml(): Element {
+    this.classes.push("view-header");
 
-    toHtml(): void {
-        super.toHtml();
-        this.classes.push("view-header");
-
-        this.add(this.#toolbar);
-        this.add(this.#tabs);
-    }
+    this.add(this.#toolbar);
+    this.add(this.#tabs);
+    return this.createElement();
+  }
 }
 
 export default ViewHeader;
