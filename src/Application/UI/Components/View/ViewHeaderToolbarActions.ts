@@ -3,6 +3,7 @@
 
 import Button from "../Button";
 import VNode from "../../Commons/VNode";
+import ActionMenu from "../ActionMenu";
 
 type _UIAction = {
     label?: string;
@@ -15,20 +16,32 @@ type _UIAction = {
 
 class ViewHeaderToolbarActions extends VNode implements IVNode {
 
-    #actions: _UIAction[] = [];
+    #actionsMenu?: VNode;
 
-    addActions(action: _UIAction | _UIAction[]) {
-        if (!Array.isArray(action)) {
-            action = [action];
+    constructor(props: TProps) {
+        super(props);
+
+        this.#actionsMenu = new ActionMenu();
+    }
+
+    addActions(actions: _UIAction | _UIAction[]) {
+        if (!Array.isArray(actions)) {
+            actions = [actions];
         }
-        action.forEach(action => this.#actions.push(action));
+
+        if (this.#actionsMenu) {
+            this.#actionsMenu.props.items = this.#actionsMenu.props.items.concat(actions);
+        }
+
+        this.render();
     }
 
     toHtml(): void {
         super.toHtml();
-        this.#actions.forEach((action: _UIAction) => {
-            this.add(new Button(action));
-        });
+
+        if (this.#actionsMenu) {
+            this.add(this.#actionsMenu);
+        }
 
         this.classes.push("view-header-toolbar-actions");
     }

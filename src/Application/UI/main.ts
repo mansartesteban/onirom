@@ -38,14 +38,6 @@ class UI {
         UI.render();
     }
 
-    // static bind(viewIdentifier: string, element: Element) {
-    //     // let viewRegistry = Registry.get("views") as ViewRegistry;
-    //     // let foundView = viewRegistry.views.find((view: View) => view.descriptor.options.id === viewIdentifier);
-    //     // if (foundView) {
-    //     //     foundView.bindContent(element);
-    //     // }
-    // }
-
     static render() {
         UI.mainNode = new VNode();
         UI.mainNode.dom = UI.mountOn.getElement();
@@ -68,13 +60,11 @@ class UI {
 
     static #loadDefaultViews() {
 
-
-
         let viewRegistry = Registry.get("views") as ViewRegistry;
         viewRegistry.register(
             new AppbarView(
                 new ViewLocator("main"),
-                new ViewDescriptor({ name: "appbar", hasHeader: true, title: "Barre d'application" })
+                new ViewDescriptor({ name: "appbar", hasHeader: true, title: "Barre d'application", maxActions: 2 })
             )
         );
         viewRegistry.register(
@@ -89,12 +79,15 @@ class UI {
                 new ViewDescriptor({ name: "scene", title: "♫ La scène, la scèène, la scèèène !", hasHeader: true })
             )
         );
-        viewRegistry.register(
-            new BrowserView(
-                new ViewLocator("activity-bar"),
-                new ViewDescriptor({ name: "browser", hasHeader: false })
-            )
-        );
+
+        for (let i = 0;i < 50;i++) {
+            viewRegistry.register(
+                new BrowserView(
+                    new ViewLocator("activity-bar"),
+                    new ViewDescriptor({ name: "browser", hasHeader: false })
+                )
+            );
+        }
 
     }
 

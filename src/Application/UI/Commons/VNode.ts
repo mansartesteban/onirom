@@ -5,6 +5,7 @@ import Registry from '@/Application/Commons/Registry';
 import VNodeRegistry from './VNodeRegistry';
 import NodeId from "./NodeId";
 import VMount from "./VMount";
+import Framework from "./Framework";
 
 class VNode implements IVNode {
 
@@ -17,9 +18,10 @@ class VNode implements IVNode {
 
     #observers: { name: string, callback: EventListenerOrEventListenerObject; }[] = [];
 
-    parent?: VNode | Element;
+    parent?: VNode;
     target?: VMount;
     dom?: Element;
+    oldDom?: Element;
 
     constructor(props?: TProps) {
         this.identifier = new NodeId();
@@ -66,6 +68,10 @@ class VNode implements IVNode {
         this.#observers.push(observers);
     };
 
+    defineProps(props: TProps) {
+        this.props = Framework.defineProps(props, this.props);
+    }
+
     defineSlot(name: string, node: VNode) {
         this.#slots.push(new Slot(name, node));
     }
@@ -85,11 +91,25 @@ class VNode implements IVNode {
         this.#observers.push({ name: eventName, callback });
     }
 
-    toHtml() {
-        let element = document.createElement("div");
-        this.dom = element;
-        this.dom.setAttribute("data-id", this.identifier.id);
+    createElement(tag: string = "div", props: TElementProps) {
+
+        let element = document.createElement(tag);
+        element.setAttribute("data-id", this.identifier.id);
+        if (props.id) {
+            element.id = props.id;
+        }
+
+        props.attributes?.forEach((attribute: TElementAttribute) =>
+            element.setAttribute(attribute.name, attribute.value || ""));
+
+        props.classes?.forEach((classe: string) =>
+            element.classList.add(classe));
+
     }
+
+    toHtml() {
+        throw "Classes which extend 'VNode' class must implement 'toHtml' method";
+    };
 
     enhanceNode() {
         if (this.dom) {
@@ -101,24 +121,49 @@ class VNode implements IVNode {
         }
     }
 
-    render(parent: VNode) {
+    // refresh() {
+
+    //     console.log("refresh", this.dom, this.parent, this.parent?.dom);
+
+    //     if (this.dom && this.parent && this.parent.dom) {
+    //         let children = this.children;
+    //         console.log("children", children);
+    //         this.parent.dom.removeChild(this.dom);
+    //         this.toHtml();
+    //         Array.from(children).forEach((child: VNode) => {
+    //             this.dom && child.dom && this.dom.appendChild(child.dom);
+    //             child.refresh();
+    //         });
+    //         this.parent.dom.appendChild(this.dom);
+
+    //     } else {
+    //         this.render();
+    //     }
+    // }
+
+    render(parent?: VNode) {
 
         this.parent = parent || this.parent;
         if (this.parent && this.parent.dom) {
-            if (this.dom) {
-                this.parent.dom?.removeChild(this.dom);
-            }
-            // If shadow dom node already exists, refresh it
-            this.toHtml();
 
+            this.toHtml();
             this.enhanceNode();
 
             this.#children.forEach((child: VNode) => {
                 child.render(this);
             });
+
+            if (this.parent.oldDom && this.oldDom) {
+                this.parent.oldDom.removeChild(this.oldDom);
+            }
+
+
+            // console.log("render", this.dom);
+
             if (this.dom) {
                 this.parent.dom.appendChild(this.dom);
             }
+
         }
     }
 }

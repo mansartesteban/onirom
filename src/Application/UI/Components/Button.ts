@@ -9,7 +9,6 @@ class Button extends VNode implements IVNode {
 
     toHtml(): void {
         super.toHtml();
-        console.log("props", this.props);
         this.classes.push("btn");
 
         this.props?.icon && this.add(new Icon(this.props.icon));
