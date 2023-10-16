@@ -15,18 +15,20 @@ class View extends VNode implements IVNode {
     this.#header = new ViewHeader(this.props);
     this.#content = new ViewContent({ orientation: this.props.orientation });
 
+    this.classes.push("view", this.props.orientation || "vertical");
+
     this.defineSlot("header", this.#header);
     this.defineSlot("content", this.#content);
-  }
-
-  toHtml(): Element {
-    this.classes.push("view", this.props.orientation || "vertical");
 
     if (this.props.hasHeader) {
       this.add(this.#header);
     }
 
     this.add(this.#content);
+
+  }
+
+  toHtml(): Element {
     return this.createElement();
   }
 }

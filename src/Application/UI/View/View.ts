@@ -20,16 +20,15 @@ class View {
     this.setup();
   }
 
-  setup() {}
+  setup() { }
 
   hasComponent() {
     return !!this.component;
   }
 
   render() {
-    console.log("view render");
+    console.log("cmp in view", this);
     if (this.hasComponent() && this.location) {
-      console.log("rendering");
       (this.component as ViewComponent).render(this.location.getLocation());
     }
   }

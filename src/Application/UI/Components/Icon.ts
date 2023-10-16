@@ -8,12 +8,11 @@ class Icon extends VNode implements IVNode {
   constructor(iconName: string = "close-r") {
     super();
     this.iconName = iconName.startsWith("gg-") ? iconName : "gg-" + iconName;
+    this.classes.push(this.iconName);
   }
 
   toHtml(): Element {
-    let dom = this.createElement("i");
-    dom.classList.add(this.iconName);
-    return dom;
+    return this.createElement("i");
   }
 }
 

@@ -13,94 +13,91 @@ import VNodeRegistry from "./Commons/VNodeRegistry";
 import VMount from "./Commons/VMount";
 import ViewLocator from "./View/ViewLocator";
 import SceneView from "./DefaultViews/Scene.view";
-import BrowserView from "./DefaultViews/Browser.view";
 
 class UI {
-  static mainView: View;
-  static mainNode: VNode;
-  static mountOn: VMount;
+    static mainView: View;
+    static mainNode: VNode;
+    static mountOn: VMount;
 
-  static setup() {
-    let viewRegistry = new ViewRegistry("views");
-    Registry.add(viewRegistry);
-    let nodeRegistry = new VNodeRegistry("vnode");
-    Registry.add(nodeRegistry);
+    static setup() {
+        let viewRegistry = new ViewRegistry("views");
+        Registry.add(viewRegistry);
+        let nodeRegistry = new VNodeRegistry("vnode");
+        Registry.add(nodeRegistry);
 
-    UI.#loadDefaultLayout();
-    UI.#loadDefaultViews();
-  }
+        UI.#loadDefaultLayout();
+        UI.#loadDefaultViews();
+    }
 
-  static mount(token: string | Element) {
-    UI.mountOn = new VMount(token);
-    UI.render();
-  }
+    static mount(token: string | Element) {
+        UI.mountOn = new VMount(token);
+        UI.render();
+    }
 
-  static render() {
-    UI.mainNode = new VNode();
-    UI.mainNode.dom = UI.mountOn.getElement();
+    static render() {
+        UI.mainNode = new VNode();
+        UI.mainNode.dom = UI.mountOn.getElement();
 
-    // UI.mainNode.dom?.appendChild(document.createElement("div"));
-    let viewRegistry = Registry.get("views") as ViewRegistry;
-    viewRegistry.views.forEach((view: View) => view.render());
-  }
+        UI.mainNode.dom?.appendChild(document.createElement("div"));
+        let viewRegistry = Registry.get("views") as ViewRegistry;
+        viewRegistry.views.forEach((view: View) => view.render());
 
-  static #loadDefaultLayout() {
-    UI.mainView = new View(
-      new NodeLocator(new VMount("#app")),
-      new ViewDescriptor({ name: "main", orientation: "horizontal" })
-    );
+    }
 
-    let viewRegistry = Registry.get("views") as ViewRegistry;
-    viewRegistry.register(UI.mainView);
+    static #loadDefaultLayout() {
 
-    // let menuBar = document.createElement("div");
-    // menuBar.id = "menu-bar";
-    // UI.mainView.append(menuBar);
-  }
+        UI.mainView = new View(
+            new NodeLocator(new VMount("#app")),
+            new ViewDescriptor({ name: "main", orientation: "horizontal" })
+        );
 
-  static #loadDefaultViews() {
-    let viewRegistry = Registry.get("views") as ViewRegistry;
-    viewRegistry.register(
-      new AppbarView(
-        new ViewLocator("main"),
-        new ViewDescriptor({
-          name: "appbar",
-          hasHeader: true,
-          title: "Barre d'application",
-          //   maxActions: 2, //TODO:
-        })
-      )
-    );
-    // viewRegistry.register(
-    //   new ActivityBarView(
-    //     new ViewLocator("main"),
-    //     new ViewDescriptor({
-    //       name: "activity-bar",
-    //       hasHeader: true,
-    //       title: "Barre d'activité",
-    //     })
-    //   )
-    // );
-    // viewRegistry.register(
-    //   new SceneView(
-    //     new ViewLocator("activity-bar"),
-    //     new ViewDescriptor({
-    //       name: "scene",
-    //       title: "♫ La scène, la scèène, la scèèène !",
-    //       hasHeader: true,
-    //     })
-    //   )
-    // );
+        let viewRegistry = Registry.get("views") as ViewRegistry;
+        viewRegistry.register(UI.mainView);
+    }
 
-    // for (let i = 0; i < 5; i++) {
-    //   viewRegistry.register(
-    //     new BrowserView(
-    //       new ViewLocator("activity-bar"),
-    //       new ViewDescriptor({ name: "browser", hasHeader: false })
-    //     )
-    //   );
-    // }
-  }
+    static #loadDefaultViews() {
+        let viewRegistry = Registry.get("views") as ViewRegistry;
+        viewRegistry.register(
+            new AppbarView(
+                new ViewLocator("main"),
+                new ViewDescriptor({
+                    name: "appbar",
+                    hasHeader: true,
+                    title: "Barre d'application",
+                    //   maxActions: 2, //TODO:
+                })
+            )
+        );
+        viewRegistry.register(
+            new ActivityBarView(
+                new ViewLocator("main"),
+                new ViewDescriptor({
+                    name: "activity-bar",
+                    hasHeader: true,
+                    title: "Barre d'activité",
+                })
+            )
+        );
+        viewRegistry.register(
+            new SceneView(
+                new ViewLocator("activity-bar"),
+                new ViewDescriptor({
+                    name: "scene",
+                    title: "♫ La scène, la scèène, la scèèène !",
+                    hasHeader: true,
+                })
+            )
+        );
+
+        // for (let i = 0;i < 5;i++) {
+        //     viewRegistry.register(
+        //         new BrowserView(
+        //             new ViewLocator("activity-bar"),
+        //             new ViewDescriptor({ name: "browser", hasHeader: false })
+        //         )
+        //     );
+        // }
+    }
 }
 
 export default UI;

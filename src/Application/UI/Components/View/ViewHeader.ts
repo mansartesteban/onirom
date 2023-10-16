@@ -17,13 +17,13 @@ class ViewHeader extends VNode implements IVNode {
 
     this.defineSlot("toolbar", this.#toolbar);
     this.defineSlot("tabs", this.#tabs);
-  }
-
-  toHtml(): Element {
     this.classes.push("view-header");
 
     this.add(this.#toolbar);
     this.add(this.#tabs);
+  }
+
+  toHtml(): Element {
     return this.createElement();
   }
 }

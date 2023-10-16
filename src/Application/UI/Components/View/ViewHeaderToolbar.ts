@@ -15,15 +15,14 @@ class ViewHeaderToolbar extends VNode implements IVNode {
     this.#actions = new ViewHeaderToolbarActions();
 
     this.defineSlot("actions", this.#actions);
-  }
-
-  toHtml(): Element {
     this.classes.push("view-header-toolbar");
 
     this.add(new Icon("chevron-down"));
     this.add(new Text(this.props.title));
     this.add(this.#actions);
+  }
 
+  toHtml(): Element {
     return this.createElement();
   }
 }

@@ -6,8 +6,10 @@
     align-items: center;
     gap: var(--margin-sm);
     cursor: pointer;
+    user-select: none;
 
     padding: var(--margin-sm);
+    margin: 1rem; // DEBUG
 
     &:hover
     {
