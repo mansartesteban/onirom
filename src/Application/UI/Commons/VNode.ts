@@ -7,6 +7,24 @@ import NodeId from "./NodeId";
 import VMount from "./VMount";
 import { defineProps } from "./Framework";
 
+enum Renderables {
+    Classes,
+    Attributes,
+    Dom,
+    Listeners,
+    Tag,
+    Content
+}
+
+class RenderHandler {
+    [Renderables.Classes]: Boolean = false;
+    [Renderables.Attributes]: Boolean = false;
+    [Renderables.Dom]: Boolean = false;
+    [Renderables.Listeners]: Boolean = false;
+    [Renderables.Tag]: Boolean = false;
+    [Renderables.Content]: Boolean = false;
+}
+
 class VNode implements IVNode {
     identifier: NodeId;
 
@@ -14,6 +32,7 @@ class VNode implements IVNode {
     #props: TProps;
     #children: VNode[] = [];
     #classes: string[] = [];
+    #content: string = "";
 
     #observers: { name: string; callback: EventListenerOrEventListenerObject; }[] =
         [];
@@ -23,6 +42,8 @@ class VNode implements IVNode {
     dom?: Element;
     newDom?: Element;
     isMounted: Boolean = false;
+
+    renderHandler: RenderHandler = new RenderHandler();
 
     constructor(props?: TProps) {
         this.identifier = new NodeId();
@@ -55,6 +76,9 @@ class VNode implements IVNode {
     }[] {
         return this.#observers;
     }
+    get content() {
+        return this.#content;
+    }
 
     set props(props: TProps) {
         this.#props = props;
@@ -65,8 +89,9 @@ class VNode implements IVNode {
     set children(children: VNode) {
         this.#children.push(children);
     }
-    set classes(classes: string) {
-        this.#classes.push(classes);
+    set classes(classes: string[]) {
+        this.renderHandler[Renderables.Classes] = true;
+        this.#classes = classes.filter(Boolean);
     }
     set observers(observers: {
         name: string;
@@ -74,24 +99,31 @@ class VNode implements IVNode {
     }) {
         this.#observers.push(observers);
     }
+    set content(content: string) {
+        this.renderHandler[Renderables.Content] = true;
+        this.#content = content;
+    }
 
-    defineProps(props: TProps) {
-
-        //TODO:
-        // const handler = {
-        //     get(cible: any, prop: any, recepteur: any) {
-        //         if (prop === "message2") {
-        //             return "le monde";
-        //         }
-        //         return Reflect.get(...arguments);
-        //     },
-        // };
+    defineProps(props: TProps): TProps {
 
         let definedProps = defineProps(props, this.props);
-        console.log("deinfe props", definedProps);
-        // let proxy = new Proxy(definedProps, handler);
-        this.props = definedProps;
-        return definedProps;
+
+        let proxy = new Proxy(definedProps, {
+
+            get: (_, key: string) => definedProps[key],
+            set: (obj: {}, prop: string, value: any): boolean => {
+                // Don't reaffect var nor trigger render if value is the same
+                if (value !== definedProps[prop]) {
+                    definedProps.notify(prop);
+                    Reflect.set(obj, prop, value);
+                    this.callRender();
+                }
+                return true;
+            }
+        });
+
+        this.props = proxy;
+        return this.props;
     }
 
     defineSlot(name: string, node: VNode) {
@@ -126,7 +158,6 @@ class VNode implements IVNode {
             element.setAttribute(attribute.name, attribute.value || "")
         );
 
-        this.classes?.forEach((classe: string) => element.classList.add(classe));
         return element;
     }
 
@@ -136,7 +167,7 @@ class VNode implements IVNode {
 
     enhanceNode(dom: Element) {
         if (dom) {
-            dom.classList.add(...this.classes);
+            this.classes && dom.classList.add(...this.classes);
 
             this.#observers.forEach(
                 (observer: {
@@ -153,7 +184,11 @@ class VNode implements IVNode {
     firstRender() {
         if (this.parent) {
             this.dom = this.enhanceNode(this.toHtml());
-            this.children.forEach((child: VNode) => child.render(this));
+            if (this.content) {
+                this.dom.innerHTML = this.content;
+            } else {
+                this.children.forEach((child: VNode) => child.render(this));
+            }
             this.parent.dom?.append(this.dom);
             this.isMounted = true;
         }
@@ -164,7 +199,11 @@ class VNode implements IVNode {
             this.newDom = this.enhanceNode(this.toHtml());
 
             // Render each child of this node
-            this.children.forEach((child: VNode) => child.render(this));
+            if (this.content) {
+                this.dom.innerHTML = this.content;
+            } else {
+                this.children.forEach((child: VNode) => child.render(this));
+            }
 
             Array.from(this.dom.childNodes).forEach((child: Node) => {
                 if (child instanceof Element) {
@@ -176,6 +215,22 @@ class VNode implements IVNode {
             this.dom = this.newDom;
             this.newDom = undefined;
 
+        }
+    }
+
+    callRender() {
+        if (this.dom) {
+            if (this.renderHandler[Renderables.Dom]) {
+                this.render();
+            } else {
+                if (this.renderHandler[Renderables.Classes]) {
+                    this.dom.setAttribute("class", this.classes.join(" "));
+                    this.renderHandler[Renderables.Classes] = false;
+                } else if (this.renderHandler[Renderables.Content]) {
+                    this.dom.innerHTML = this.content;
+                    this.renderHandler[Renderables.Content] = false;
+                }
+            }
         }
     }
 
@@ -196,7 +251,6 @@ export default VNode;
 function replace(parent: Node, currentChild: Node, newChild: Element) {
     let position = 0;
     if (currentChild.parentElement === parent) {
-        // console.log("removing", parent, currentChild, newChild);
         position = Array.prototype.indexOf.call(parent.childNodes, currentChild);
         parent.removeChild(currentChild);
     } else {
@@ -219,5 +273,9 @@ TODO:
 - Implement a shouldUpdate or needUpdate 
     => For exemple, if we update a class or attribute, it should not rerender as the Element can directly have its dom udpated. 
     => But if we change a prop which change a component, we should rereder 
+- Implement a "partial render"
+    => If the value to update is : classes, attributes, eventListener, innerText, don't rerender but call "setAttribute", "classList" ...
+    => If the value to update is children, tag, rerender
+    => Make an eventlistener on classes, attributes and other values that don't trigger rerender and toggle a flag "shouldUpdateAttribute", "shouldUpdateClasses" ...
 - Implement lyfecycleHooks (onCreate, created, onMount, mounted, onUpdate, updated, onRemove, removed, onDestroy, destroyed)
 */

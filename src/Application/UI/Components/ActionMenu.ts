@@ -15,14 +15,14 @@ class ActionMenu extends VNode {
                 default: 3,
             },
         });
+
+
         this.classes.push("action-menu");
 
         if (this.props.maxActions) {
-            console.log("max action", this.props.items, this.props.maxActions);
             this.props.items
                 .slice(0, this.props.maxActions)
                 .forEach((item: TProps) => {
-                    console.log("adding btn", item);
                     this.add(new Button(item));
                 });
         }
@@ -37,13 +37,11 @@ class ActionMenu extends VNode {
         this.props.items
             .slice(0, this.props.maxActions)
             .forEach((item: TProps) => {
-                console.log("adding btn", item);
                 this.add(new Button(item));
             });
     }
 
     toHtml(): Element {
-        console.log("this.items", this.props.items, this.children);
         return this.createElement();
     }
 }

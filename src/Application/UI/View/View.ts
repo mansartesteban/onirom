@@ -27,7 +27,6 @@ class View {
   }
 
   render() {
-    console.log("cmp in view", this);
     if (this.hasComponent() && this.location) {
       (this.component as ViewComponent).render(this.location.getLocation());
     }

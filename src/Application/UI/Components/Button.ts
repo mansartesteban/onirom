@@ -6,21 +6,56 @@ import VNode from "../Commons/VNode";
 class Button extends VNode implements IVNode {
     constructor(props?: TProps) {
         super(props);
-        this.classes.push("btn");
 
-        this.props?.icon && this.add(new Icon(this.props.icon));
-        // this.props?.label && this.add(new Text(this.props.label));
+        const prps = this.defineProps({
+            label: {
+                type: String
+            },
+            icon: {
+                type: String
+            },
+            severity: {
+                type: String
+            },
+            rounded: {
+                type: Boolean
+            },
+            asText: {
+                type: Boolean
+            },
+            command: {
+                type: Function
+            }
+        });
 
-        this.props?.severity && this.classes.push(this.props.severity);
-        this.props?.rounded && this.classes.push("rounded");
-        this.props?.asText && this.classes.push("as-text");
+        prps.icon && this.add(new Icon(this.props.icon));
+        prps.command && this.on("click", this.props?.command);
 
-        this.props?.command && this.on("click", this.props?.command);
+        prps.observe("severity", () => {
+            this.makeClasses();
+        });
+        prps.observe("label", () => {
+            this.makeContent();
+        });
+    }
+
+    makeContent() {
+        this.content = this.props.label;
+    }
+
+    makeClasses() {
+        this.classes = [
+            "btn",
+            this.props.rounded && "rounded",
+            this.props.asText && "as-text",
+            this.props.severity
+        ];
     }
 
     toHtml(): Element {
         let dom = this.createElement();
-        dom.innerText = this.props.label;
+        this.makeClasses();
+        this.makeContent();
         return dom;
     }
 }

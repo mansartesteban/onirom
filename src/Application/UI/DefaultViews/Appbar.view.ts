@@ -8,29 +8,36 @@ class AppbarView extends View {
             let component = this.component as ViewComponent;
             let actionComponent = component.slots.header.slots.toolbar.slots
                 .actions as ViewHeaderToolbarActions;
+
             actionComponent.addItems([
                 {
                     label: "Libellé de l'action",
                     rounded: true,
                     icon: "add",
-                    command: () => {
-                        console.info("clicked ! and add");
-                        actionComponent.addItems([
-                            {
-                                label: "Libellé de l'action 2",
-                                rounded: true,
-                                icon: "arrow-left",
-                                command: () => {
-                                    console.info("clicked !");
-                                },
-                            },
-                        ]);
-                    },
+                    command: func,
                 },
             ]);
-            component.render();
+            function func() {
+                () => {
+                    console.info("click");
+                    // console.info("clicked ! and add");
+                    // actionComponent.addItems([
+                    //     {
+                    //         label: "Libellé de l'action 2",
+                    //         rounded: true,
+                    //         icon: "arrow-left",
+                    //         command: () => {
+                    //             console.info("clicked !");
+                    //         },
+                    //     },
+                    // ]);
+
+
+                    //         component.render();
+                };
+            }
         }
     }
-}
 
+}
 export default AppbarView;

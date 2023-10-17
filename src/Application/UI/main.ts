@@ -13,6 +13,7 @@ import VNodeRegistry from "./Commons/VNodeRegistry";
 import VMount from "./Commons/VMount";
 import ViewLocator from "./View/ViewLocator";
 import SceneView from "./DefaultViews/Scene.view";
+import Button from "./Components/Button";
 
 class UI {
     static mainView: View;
@@ -38,7 +39,16 @@ class UI {
         UI.mainNode = new VNode();
         UI.mainNode.dom = UI.mountOn.getElement();
 
-        UI.mainNode.dom?.appendChild(document.createElement("div"));
+        let btn = new Button({ label: "Counter : 0", severity: "error", rounded: true, command });
+        UI.mainNode.add(btn);
+        btn.render(UI.mainNode);
+
+        let c = 0;
+        function command() {
+            c++;
+            btn.props.label = "Counter : " + c;
+            btn.props.severity = c % 2 ? "error" : c % 5 ? "success" : "info";
+        }
         let viewRegistry = Registry.get("views") as ViewRegistry;
         viewRegistry.views.forEach((view: View) => view.render());
 
@@ -89,25 +99,7 @@ class UI {
             )
         );
 
-        // for (let i = 0;i < 5;i++) {
-        //     viewRegistry.register(
-        //         new BrowserView(
-        //             new ViewLocator("activity-bar"),
-        //             new ViewDescriptor({ name: "browser", hasHeader: false })
-        //         )
-        //     );
-        // }
     }
 }
 
 export default UI;
-
-/*
-
-TODO:
-- Changer le nom de la class XXXLocation en XXXLocator
-- Créer un locator générique pour trouver un VNODE
-- Créer un locator spécifique aux Views qui renverrons leur VNode
-- Appliquer un nom sur une View ("views.appbar")
-- Chercher via ce nom pour le ViewLocator
-*/
