@@ -41,7 +41,7 @@ class ActionMenu extends VNode {
             });
     }
 
-    toHtml(): Element {
+    create(): Element {
         return this.createElement();
     }
 }

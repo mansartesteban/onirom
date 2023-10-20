@@ -64,7 +64,7 @@ class Engine {
     window.addEventListener("resize", () => {
       // canvas.width = window.innerWidth;
       // canvas.height = window.innerHeight;
-      // Map.size = new Vector2(canvas.clientWidth, canvas.clientHeight); // TODO: Find a way to communicate coordinates, but not here 
+      // Map.size = new Vector2(canvas.clientWidth, canvas.clientHeight); // TODO Find a way to communicate coordinates, but not here 
       ctx.translate(Map.size.x / 2, Map.size.y / 2);
     });
 
@@ -93,7 +93,7 @@ class Engine {
   //   });
   // }
 
-  // TODO: This has not to be in Engine class, it should depends on a instanciated Scene, but keep it somewhere
+  // TODO This has not to be in Engine class, it should depends on a instanciated Scene, but keep it somewhere
   #initializeMap() {
     // Create a map to handle coordinate system
     const mapOptions = {

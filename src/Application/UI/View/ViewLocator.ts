@@ -24,7 +24,7 @@ class ViewLocator extends NodeLocator implements ILocalizable {
 export default ViewLocator;
 
 /*
- TODO:
+ TODO
  La location doit être un ViewContainer
  La location doit connaître la position dans le ViewContainer (si plusieurs enfants)
  */

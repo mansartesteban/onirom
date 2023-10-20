@@ -30,7 +30,7 @@ class ViewHeaderToolbarActions extends VNode implements IVNode {
         this.#actionsMenu?.addItems(items);
     }
 
-    toHtml(): Element {
+    create(): Element {
         return this.createElement();
     }
 }

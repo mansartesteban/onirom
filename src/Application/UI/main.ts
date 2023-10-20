@@ -14,6 +14,7 @@ import VMount from "./Commons/VMount";
 import ViewLocator from "./View/ViewLocator";
 import SceneView from "./DefaultViews/Scene.view";
 import Button from "./Components/Button";
+import { defineRefs } from "./Commons/Framework";
 
 class UI {
     static mainView: View;
@@ -44,13 +45,28 @@ class UI {
         btn.render(UI.mainNode);
 
         let c = 0;
+        const r = defineRefs({
+            yolo: "moussa"
+        });
+        r.test = "toto";
+
+        let colors = [
+            "primary", "success", "warning", "error", "info"
+        ];
         function command() {
             c++;
             btn.props.label = "Counter : " + c;
-            btn.props.severity = c % 2 ? "error" : c % 5 ? "success" : "info";
+            btn.props.severity = colors[c % colors.length];
+            // btn.props.rounded = c % 2 === 0;
+
+            r.yolo = "daz" + c;
+
+            // btn.attributes = {
+            //     style: "border: 4px dashed fuchsia"
+            // };
         }
-        let viewRegistry = Registry.get("views") as ViewRegistry;
-        viewRegistry.views.forEach((view: View) => view.render());
+        // let viewRegistry = Registry.get("views") as ViewRegistry;
+        // viewRegistry.views.forEach((view: View) => view.render());
 
     }
 
@@ -58,7 +74,7 @@ class UI {
 
         UI.mainView = new View(
             new NodeLocator(new VMount("#app")),
-            new ViewDescriptor({ name: "main", orientation: "horizontal" })
+            new ViewDescriptor({ name: "main", hasHeader: false, orientation: "horizontal" })
         );
 
         let viewRegistry = Registry.get("views") as ViewRegistry;
@@ -66,38 +82,38 @@ class UI {
     }
 
     static #loadDefaultViews() {
-        let viewRegistry = Registry.get("views") as ViewRegistry;
-        viewRegistry.register(
-            new AppbarView(
-                new ViewLocator("main"),
-                new ViewDescriptor({
-                    name: "appbar",
-                    hasHeader: true,
-                    title: "Barre d'application",
-                    //   maxActions: 2, //TODO:
-                })
-            )
-        );
-        viewRegistry.register(
-            new ActivityBarView(
-                new ViewLocator("main"),
-                new ViewDescriptor({
-                    name: "activity-bar",
-                    hasHeader: true,
-                    title: "Barre d'activité",
-                })
-            )
-        );
-        viewRegistry.register(
-            new SceneView(
-                new ViewLocator("activity-bar"),
-                new ViewDescriptor({
-                    name: "scene",
-                    title: "♫ La scène, la scèène, la scèèène !",
-                    hasHeader: true,
-                })
-            )
-        );
+        // let viewRegistry = Registry.get("views") as ViewRegistry;
+        // viewRegistry.register(
+        //     new AppbarView(
+        //         new ViewLocator("main"),
+        //         new ViewDescriptor({
+        //             name: "appbar",
+        //             hasHeader: true,
+        //             title: "Barre d'application",
+        //             //   maxActions: 2, //TODO
+        //         })
+        //     )
+        // );
+        // viewRegistry.register(
+        //     new ActivityBarView(
+        //         new ViewLocator("main"),
+        //         new ViewDescriptor({
+        //             name: "activity-bar",
+        //             hasHeader: true,
+        //             title: "Barre d'activité",
+        //         })
+        //     )
+        // );
+        // viewRegistry.register(
+        //     new SceneView(
+        //         new ViewLocator("activity-bar"),
+        //         new ViewDescriptor({
+        //             name: "scene",
+        //             title: "♫ La scène, la scèène, la scèèène !",
+        //             hasHeader: true,
+        //         })
+        //     )
+        // );
 
     }
 }

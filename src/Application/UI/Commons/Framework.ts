@@ -1,4 +1,3 @@
-import Reactive from "./Reactive";
 import VNode from "./VNode";
 
 type TProp = {
@@ -8,11 +7,10 @@ type TProp = {
     value: null;
 };
 
-
 export const defineProps = (props: TProps, propsValue: TProps): TProps => {
 
     Object.keys(props).forEach((propKey: string) => {
-        if (["observers", "observe", "fire"].includes(propKey)) {
+        if (["__observers", "__observe", "__notify"].includes(propKey)) {
             throw `Props cannot be named '${propKey}' as it is a internal reserved method`;
         }
         let prop = props[propKey] as TProp;
@@ -30,31 +28,38 @@ export const defineProps = (props: TProps, propsValue: TProps): TProps => {
         props[propKey] = value;
     });
 
-    props.observers = [];
-    props.observe = (propName: String, callback: Function) => {
-        props.observers.push({ propName, callback });
-    };
-    props.notify = (propName: string) => props.observers.forEach((observer: { propName: String, callback: Function; }) => observer.propName === propName && observer.callback());
+    props.__observers = [];
+
+    props.__observe = (propName: String, callback: Function) =>
+        props.__observers.push({ propName, callback });
+
+    props.__notify = (propName: string) =>
+        props.__observers.forEach((observer: { propName: String, callback: Function; }) =>
+            observer.propName === propName && observer.callback());
 
     return props;
 };
 
-// TODO:
-export const h = (element: string, props: TProps, children: VNode[]) => {
 
-};
+export const defineRefs = (ctx?: any): any => {
 
-export const ref = (value?: any) => {
-    //TODO:
-    // const handler = {
-    //     get(cible: any, prop: any, recepteur: any) {
-    //         return value.value;
-    //     },
-    // };
-    // let proxy = new Proxy(value, handler);
+    const refs: { [name: string]: any; } = ctx || {};
 
-    // value.prototype.react = function () { };
-    const proxy = new Reactive(value);
+    const proxy = new Proxy(refs, {
+
+        get: (_, key: string) => refs[key],
+        set: (obj: {}, prop: string, value: any): boolean => {
+            // Don't reaffect var nor trigger render if value is the same
+            const update = value !== refs[prop];
+            if (update) {
+                Reflect.set(obj, prop, value);
+                console.log("this", ctx);
+                // refs.__notify(prop);
+                // this.render();
+            }
+            return value !== undefined && value !== null;
+        }
+    });
 
     return proxy;
 };
@@ -83,3 +88,9 @@ function getDefaultValue(defaultExpression: any) {
 
     return defaultExpression;
 }
+
+// TODO
+// export const h = (element: string, props: TProps, children: VNode[]) => {
+// };
+// export function computed() { };
+// export function watch() { };

@@ -120,7 +120,7 @@ class Ant extends Entity {
 
 
     /*
-    TODO:
+    TODO
   
     OK newTarget
     OK leavePheromone

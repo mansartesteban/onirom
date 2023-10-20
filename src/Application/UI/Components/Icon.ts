@@ -11,7 +11,7 @@ class Icon extends VNode implements IVNode {
     this.classes.push(this.iconName);
   }
 
-  toHtml(): Element {
+  create(): Element {
     return this.createElement("i");
   }
 }

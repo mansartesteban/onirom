@@ -31,10 +31,15 @@ class Button extends VNode implements IVNode {
         prps.icon && this.add(new Icon(this.props.icon));
         prps.command && this.on("click", this.props?.command);
 
-        prps.observe("severity", () => {
+        prps.__observe("severity", () => {
+            console.log("observed 'severity'");
             this.makeClasses();
         });
-        prps.observe("label", () => {
+        // prps.__observe("attributes", () => {
+        //     console.log("observed 'attributes'");
+        //     this.makeAttributes();
+        // });
+        prps.__observe("label", () => {
             this.makeContent();
         });
     }
@@ -52,9 +57,16 @@ class Button extends VNode implements IVNode {
         ];
     }
 
-    toHtml(): Element {
+    makeAttributes() {
+        this.attributes = {
+            style: "border: 10px solid blue"
+        };
+    }
+
+    create(): Element {
         let dom = this.createElement();
         this.makeClasses();
+        this.makeAttributes();
         this.makeContent();
         return dom;
     }

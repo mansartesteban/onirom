@@ -7,23 +7,7 @@ import NodeId from "./NodeId";
 import VMount from "./VMount";
 import { defineProps } from "./Framework";
 
-enum Renderables {
-    Classes,
-    Attributes,
-    Dom,
-    Listeners,
-    Tag,
-    Content
-}
-
-class RenderHandler {
-    [Renderables.Classes]: Boolean = false;
-    [Renderables.Attributes]: Boolean = false;
-    [Renderables.Dom]: Boolean = false;
-    [Renderables.Listeners]: Boolean = false;
-    [Renderables.Tag]: Boolean = false;
-    [Renderables.Content]: Boolean = false;
-}
+import { NodeRenderer, Renderables } from "./NodeRenderer";
 
 class VNode implements IVNode {
     identifier: NodeId;
@@ -33,9 +17,8 @@ class VNode implements IVNode {
     #children: VNode[] = [];
     #classes: string[] = [];
     #content: string = "";
-
-    #observers: { name: string; callback: EventListenerOrEventListenerObject; }[] =
-        [];
+    #attributes: { [name: string]: any; } = {};
+    #listeners: TEventListener[] = [];
 
     parent?: VNode;
     target?: VMount;
@@ -43,7 +26,7 @@ class VNode implements IVNode {
     newDom?: Element;
     isMounted: Boolean = false;
 
-    renderHandler: RenderHandler = new RenderHandler();
+    renderer: NodeRenderer = new NodeRenderer(this);
 
     constructor(props?: TProps) {
         this.identifier = new NodeId();
@@ -70,14 +53,14 @@ class VNode implements IVNode {
     get classes(): string[] {
         return this.#classes;
     }
-    get observers(): {
-        name: string;
-        callback: EventListenerOrEventListenerObject;
-    }[] {
-        return this.#observers;
+    get listeners(): TEventListener[] {
+        return this.#listeners;
     }
     get content() {
         return this.#content;
+    }
+    get attributes(): { [name: string]: any; } {
+        return this.#attributes;
     }
 
     set props(props: TProps) {
@@ -90,18 +73,20 @@ class VNode implements IVNode {
         this.#children.push(children);
     }
     set classes(classes: string[]) {
-        this.renderHandler[Renderables.Classes] = true;
+        this.renderer.dispatch(Renderables.Classes);
         this.#classes = classes.filter(Boolean);
     }
-    set observers(observers: {
-        name: string;
-        callback: EventListenerOrEventListenerObject;
-    }) {
-        this.#observers.push(observers);
+    set listeners(listeners: TEventListener) {
+        this.renderer.dispatch(Renderables.Listeners);
+        this.#listeners.push(listeners);
     }
     set content(content: string) {
-        this.renderHandler[Renderables.Content] = true;
+        this.renderer.dispatch(Renderables.Content);
         this.#content = content;
+    }
+    set attributes(attributes: { [name: string]: any; }) {
+        this.renderer.dispatch(Renderables.Attributes);
+        this.#attributes = { ...this.#attributes, ...attributes };
     }
 
     defineProps(props: TProps): TProps {
@@ -113,12 +98,13 @@ class VNode implements IVNode {
             get: (_, key: string) => definedProps[key],
             set: (obj: {}, prop: string, value: any): boolean => {
                 // Don't reaffect var nor trigger render if value is the same
-                if (value !== definedProps[prop]) {
-                    definedProps.notify(prop);
+                const update = value !== definedProps[prop];
+                if (update) {
                     Reflect.set(obj, prop, value);
-                    this.callRender();
+                    definedProps.__notify(prop);
+                    this.render();
                 }
-                return true;
+                return update;
             }
         });
 
@@ -144,138 +130,48 @@ class VNode implements IVNode {
     }
 
     on(eventName: string, callback: EventListenerOrEventListenerObject) {
-        this.#observers.push({ name: eventName, callback });
+        this.#listeners.push({ name: eventName, callback, attached: false });
     }
 
     createElement(tag: string = "div", props?: TElementProps) {
         let element = document.createElement(tag);
-        // element.setAttribute("data-id", this.identifier.id);
+
         if (props?.id) {
             element.id = props.id;
         }
 
-        props?.attributes?.forEach((attribute: TElementAttribute) =>
-            element.setAttribute(attribute.name, attribute.value || "")
-        );
-
         return element;
     }
 
-    toHtml(): Element {
+    create(): Element {
         return this.createElement();
     }
 
-    enhanceNode(dom: Element) {
-        if (dom) {
-            this.classes && dom.classList.add(...this.classes);
+    render(parent?: VNode) {
 
-            this.#observers.forEach(
-                (observer: {
-                    name: string;
-                    callback: EventListenerOrEventListenerObject;
-                }) => {
-                    dom?.addEventListener(observer.name, observer.callback);
-                }
-            );
-        }
-        return dom;
-    }
-
-    firstRender() {
-        if (this.parent) {
-            this.dom = this.enhanceNode(this.toHtml());
-            if (this.content) {
-                this.dom.innerHTML = this.content;
-            } else {
-                this.children.forEach((child: VNode) => child.render(this));
-            }
-            this.parent.dom?.append(this.dom);
-            this.isMounted = true;
-        }
-    }
-
-    reRender() {
-        if (this.parent && this.parent.dom && this.dom) {
-            this.newDom = this.enhanceNode(this.toHtml());
-
-            // Render each child of this node
-            if (this.content) {
-                this.dom.innerHTML = this.content;
-            } else {
-                this.children.forEach((child: VNode) => child.render(this));
-            }
-
-            Array.from(this.dom.childNodes).forEach((child: Node) => {
-                if (child instanceof Element) {
-                    this.newDom?.appendChild(child);
-                }
-            });
-
-            replace(this.parent.dom, this.dom, this.newDom);
-            this.dom = this.newDom;
-            this.newDom = undefined;
-
-        }
-    }
-
-    callRender() {
-        if (this.dom) {
-            if (this.renderHandler[Renderables.Dom]) {
-                this.render();
-            } else {
-                if (this.renderHandler[Renderables.Classes]) {
-                    this.dom.setAttribute("class", this.classes.join(" "));
-                    this.renderHandler[Renderables.Classes] = false;
-                } else if (this.renderHandler[Renderables.Content]) {
-                    this.dom.innerHTML = this.content;
-                    this.renderHandler[Renderables.Content] = false;
-                }
-            }
-        }
-    }
-
-    render(parent?: VNode | null) {
-        this.parent = parent || this.parent;
-
-        if (!this.parent) {
-            console.error("No parent found to render in");
+        if (!this.isMounted) {
+            this.renderer.dispatch(Renderables.Dom);
+            this.classes.length && this.renderer.dispatch(Renderables.Classes);
+            this.listeners.length && this.renderer.dispatch(Renderables.Listeners);
+            this.attributes.length && this.renderer.dispatch(Renderables.Attributes);
+            this.content && this.renderer.dispatch(Renderables.Content);
         }
 
-        // If the node is already mounted we refresh it, else we render it
-        this.isMounted ? this.reRender() : this.firstRender();
+        this.renderer.render(parent);
     }
+
 }
 
 export default VNode;
 
-function replace(parent: Node, currentChild: Node, newChild: Element) {
-    let position = 0;
-    if (currentChild.parentElement === parent) {
-        position = Array.prototype.indexOf.call(parent.childNodes, currentChild);
-        parent.removeChild(currentChild);
-    } else {
-        console.warn("Child element not found on parent");
-    }
-    insertAt(parent, newChild, position);
-}
-
-function insertAt(parent: Node, child: Node, index: number) {
-    if (!index) index = 0;
-    if (index >= parent.childNodes.length) {
-        parent.appendChild(child);
-    } else {
-        parent.insertBefore(child, parent.childNodes[index]);
-    }
-}
-
 /*
-TODO:
-- Implement a shouldUpdate or needUpdate 
-    => For exemple, if we update a class or attribute, it should not rerender as the Element can directly have its dom udpated. 
-    => But if we change a prop which change a component, we should rereder 
-- Implement a "partial render"
-    => If the value to update is : classes, attributes, eventListener, innerText, don't rerender but call "setAttribute", "classList" ...
-    => If the value to update is children, tag, rerender
-    => Make an eventlistener on classes, attributes and other values that don't trigger rerender and toggle a flag "shouldUpdateAttribute", "shouldUpdateClasses" ...
+TODO
 - Implement lyfecycleHooks (onCreate, created, onMount, mounted, onUpdate, updated, onRemove, removed, onDestroy, destroyed)
+- Implement unmount, destroy
+- If several props are changed in the same scope, the vnode will rerender as many times as there are updates 
+    => Create a "renderQueue" which will store all modification to bring before to render
+    => When "transactions" are finished, call the render method of the node
+    => Call a nextTick callbacks at the end of render (nextTick could be global or individual)
+- If the value changed is not a prop (attribute, callback ...) render method is not called
+
 */

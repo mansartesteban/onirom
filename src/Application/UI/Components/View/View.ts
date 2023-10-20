@@ -6,29 +6,28 @@ import ViewContent from "./ViewContent";
 import VNode from "../../Commons/VNode";
 
 class View extends VNode implements IVNode {
-  #header: ViewHeader;
+  #header?: ViewHeader;
   #content: ViewContent;
 
   constructor(props?: TProps) {
     super(props);
 
-    this.#header = new ViewHeader(this.props);
+    if (props?.hasHeader) {
+      this.#header = new ViewHeader(this.props);
+      this.defineSlot("header", this.#header);
+      this.add(this.#header);
+    }
     this.#content = new ViewContent({ orientation: this.props.orientation });
 
     this.classes.push("view", this.props.orientation || "vertical");
 
-    this.defineSlot("header", this.#header);
     this.defineSlot("content", this.#content);
-
-    if (this.props.hasHeader) {
-      this.add(this.#header);
-    }
 
     this.add(this.#content);
 
   }
 
-  toHtml(): Element {
+  create(): Element {
     return this.createElement();
   }
 }

@@ -1,4 +1,5 @@
 interface IVNode {
+    renderer: NodeRenderer;
     render(parent: VNode);
 }
 
@@ -15,6 +16,12 @@ type TElementProps = {
 type TElementAttribute = {
     name: string,
     value?: string;
+};
+
+type TEventListener = {
+    name: string;
+    callback: EventListenerOrEventListenerObject;
+    attached: Boolean;
 };
 
 type TRenderableElement = string | Element | VNode;

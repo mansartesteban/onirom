@@ -72,7 +72,7 @@ class Text implements IDrawable {
 export default Text;
 
 /*
-TODO:
+TODO
 - Centrer le text sur la position
 - Appliquer des styles différents
 */

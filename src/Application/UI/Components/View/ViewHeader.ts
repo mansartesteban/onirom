@@ -23,7 +23,7 @@ class ViewHeader extends VNode implements IVNode {
     this.add(this.#tabs);
   }
 
-  toHtml(): Element {
+  create(): Element {
     return this.createElement();
   }
 }

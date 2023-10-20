@@ -22,7 +22,7 @@ class ViewHeaderToolbar extends VNode implements IVNode {
     this.add(this.#actions);
   }
 
-  toHtml(): Element {
+  create(): Element {
     return this.createElement();
   }
 }

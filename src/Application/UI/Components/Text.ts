@@ -10,7 +10,7 @@ class Text extends VNode implements IVNode {
     this.text = text;
   }
 
-  toHtml(): Element {
+  create(): Element {
     let dom = this.createElement();
     dom.innerHTML = this.text;
     return dom;

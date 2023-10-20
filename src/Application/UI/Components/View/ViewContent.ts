@@ -8,7 +8,7 @@ class ViewContent extends VNode implements IVNode {
     super(props);
     this.classes.push("view-content");
   }
-  toHtml(): Element {
+  create(): Element {
     return this.createElement();
   }
 }
