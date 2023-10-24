@@ -6,7 +6,9 @@ import VNode from "../Commons/VNode";
 class Button extends VNode implements IVNode {
     constructor(props?: TProps) {
         super(props);
+    }
 
+    setup() {
         const prps = this.defineProps({
             label: {
                 type: String
@@ -32,7 +34,6 @@ class Button extends VNode implements IVNode {
         prps.command && this.on("click", this.props?.command);
 
         prps.__observe("severity", () => {
-            console.log("observed 'severity'");
             this.makeClasses();
         });
         // prps.__observe("attributes", () => {

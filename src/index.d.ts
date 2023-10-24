@@ -31,10 +31,6 @@ interface IDrawable {
     draw(ctx: CanvasRenderingContext2D);
 }
 
-interface IUIComponent {
-    render(parent: Element);
-}
-
 interface IRegistry {
     id: string;
     register(...item: any): void;

@@ -49,19 +49,27 @@ export const defineRefs = (ctx?: any): any => {
 
         get: (_, key: string) => refs[key],
         set: (obj: {}, prop: string, value: any): boolean => {
-            // Don't reaffect var nor trigger render if value is the same
-            const update = value !== refs[prop];
-            if (update) {
+            // Neither reaffect var nor trigger render if value is the same
+            if (value !== refs[prop]) {
                 Reflect.set(obj, prop, value);
-                console.log("this", ctx);
-                // refs.__notify(prop);
-                // this.render();
             }
             return value !== undefined && value !== null;
         }
     });
 
     return proxy;
+};
+
+export const h = (element: string | VNode, props?: TProps, children?: VNode[]) => {
+    let node = element instanceof VNode ? element : new VNode();
+    if (props) {
+        node.props = props;
+    }
+    if (children) {
+        node.children = children;
+    }
+    node.setup();
+    return node;
 };
 
 function isValidValue(value: any, prop: TProp, propKey: string) {
@@ -90,7 +98,5 @@ function getDefaultValue(defaultExpression: any) {
 }
 
 // TODO
-// export const h = (element: string, props: TProps, children: VNode[]) => {
-// };
 // export function computed() { };
 // export function watch() { };

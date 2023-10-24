@@ -5,7 +5,7 @@ import Registry from "@/Application/Commons/Registry";
 import VNodeRegistry from "./VNodeRegistry";
 import NodeId from "./NodeId";
 import VMount from "./VMount";
-import { defineProps } from "./Framework";
+import { defineProps, h } from "./Framework";
 
 import { NodeRenderer, Renderables } from "./NodeRenderer";
 
@@ -17,6 +17,7 @@ class VNode implements IVNode {
     #children: VNode[] = [];
     #classes: string[] = [];
     #content: string = "";
+    #tag: string = "";
     #attributes: { [name: string]: any; } = {};
     #listeners: TEventListener[] = [];
 
@@ -28,14 +29,19 @@ class VNode implements IVNode {
 
     renderer: NodeRenderer = new NodeRenderer(this);
 
-    constructor(props?: TProps) {
+    constructor(props?: TProps, tag: string = "", children: VNode[] = []) {
         this.identifier = new NodeId();
 
         let nodeRegistry = Registry.get("vnode") as VNodeRegistry;
         nodeRegistry.register(this);
 
         this.#props = props || {};
+        this.#tag = tag;
+        this.#children = children;
+        this.setup();
     }
+
+    setup() { }
 
     get props(): { [name: string]: any; } {
         return this.#props;
@@ -62,6 +68,9 @@ class VNode implements IVNode {
     get attributes(): { [name: string]: any; } {
         return this.#attributes;
     }
+    get tag() {
+        return this.#tag;
+    }
 
     set props(props: TProps) {
         this.#props = props;
@@ -69,8 +78,11 @@ class VNode implements IVNode {
     set slots(slots: Slot) {
         this.#slots.push(slots);
     }
-    set children(children: VNode) {
-        this.#children.push(children);
+    set children(children: VNode | VNode[]) {
+        if (!Array.isArray(children)) {
+            children = [children];
+        }
+        this.#children = children;
     }
     set classes(classes: string[]) {
         this.renderer.dispatch(Renderables.Classes);
@@ -87,6 +99,17 @@ class VNode implements IVNode {
     set attributes(attributes: { [name: string]: any; }) {
         this.renderer.dispatch(Renderables.Attributes);
         this.#attributes = { ...this.#attributes, ...attributes };
+    }
+    set tag(tag: string) {
+        this.renderer.dispatch(Renderables.Tag);
+        this.#tag = tag;
+    }
+
+    h(element: string | VNode, props?: TProps, children?: VNode[]) {
+        const node = h(element, props, children);
+        node.parent = this;
+        this.children = node;
+        node.render();
     }
 
     defineProps(props: TProps): TProps {
