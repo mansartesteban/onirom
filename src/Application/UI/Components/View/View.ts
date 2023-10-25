@@ -1,9 +1,9 @@
 /// <reference path="View.d.ts" />
 /// <reference path="../../Commons/UI.d.ts" />
 
-import ViewHeader from "./ViewHeader";
-import ViewContent from "./ViewContent";
-import VNode from "../../Commons/VNode";
+import ViewHeader from "@ui/Components/View/ViewHeader";
+import ViewContent from "@ui/Components/View/ViewContent";
+import VNode from "@ui/Core/Commons/VNode";
 
 class View extends VNode implements IVNode {
   #header?: ViewHeader;
@@ -24,7 +24,6 @@ class View extends VNode implements IVNode {
     this.defineSlot("content", this.#content);
 
     this.add(this.#content);
-
   }
 
   create(): Element {

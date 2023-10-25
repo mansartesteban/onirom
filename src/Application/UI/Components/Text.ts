@@ -1,6 +1,6 @@
 /// <reference path="../Commons/UI.d.ts" />
 
-import VNode from "../Commons/VNode";
+import VNode from "@ui/Core/Commons/VNode";
 
 class Text extends VNode implements IVNode {
   text: string;

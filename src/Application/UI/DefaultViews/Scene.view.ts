@@ -1,6 +1,5 @@
-import View from "../View/View";
+import View from "@ui/Core/View/View";
 
-class SceneView extends View {
-}
+class SceneView extends View {}
 
 export default SceneView;

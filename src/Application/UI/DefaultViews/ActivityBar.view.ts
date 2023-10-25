@@ -1,6 +1,5 @@
-import View from "../View/View";
+import View from "@ui/Core/View/View";
 
-class ActivityBarView extends View {
-}
+class ActivityBarView extends View {}
 
 export default ActivityBarView;

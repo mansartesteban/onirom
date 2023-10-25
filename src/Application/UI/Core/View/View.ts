@@ -1,6 +1,6 @@
 import ViewComponent from "@/Application/UI/Components/View/View";
-import ViewDescriptor from "./ViewDescriptor";
-import NodeLocator from "../Commons/NodeLocator";
+import ViewDescriptor from "@ui/Core/View/ViewDescriptor";
+import NodeLocator from "@ui/Core/Commons/NodeLocator";
 
 class View {
   location?: NodeLocator;
@@ -20,7 +20,7 @@ class View {
     this.setup();
   }
 
-  setup() { }
+  setup() {}
 
   hasComponent() {
     return !!this.component;

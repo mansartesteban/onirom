@@ -1,10 +1,10 @@
 /// <reference path="View.d.ts" />
 /// <reference path="../../Commons/UI.d.ts" />
 
-import ViewHeaderToolbarActions from "./ViewHeaderToolbarActions";
-import Icon from "../Icon";
-import Text from "../Text";
-import VNode from "../../Commons/VNode";
+import ViewHeaderToolbarActions from "@ui/Components/View/ViewHeaderToolbarActions";
+import Icon from "@ui/Components/Icon";
+import Text from "@ui/Components/Text";
+import VNode from "@ui/Core/Commons/VNode";
 
 class ViewHeaderToolbar extends VNode implements IVNode {
   #actions: ViewHeaderToolbarActions;

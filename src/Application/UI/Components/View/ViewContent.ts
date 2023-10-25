@@ -1,7 +1,7 @@
 /// <reference path="View.d.ts" />
 /// <reference path="../../Commons/UI.d.ts" />
 
-import VNode from "../../Commons/VNode";
+import VNode from "@ui/Core/Commons/VNode";
 
 class ViewContent extends VNode implements IVNode {
   constructor(props: TProps) {

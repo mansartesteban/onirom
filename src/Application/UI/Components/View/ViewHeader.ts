@@ -3,7 +3,7 @@
 
 import ViewHeaderTabs from "./ViewHeaderTabs";
 import ViewHeaderToolbar from "./ViewHeaderToolbar";
-import VNode from "../../Commons/VNode";
+import VNode from "@ui/Core/Commons/VNode";
 
 class ViewHeader extends VNode implements IVNode {
   #tabs: ViewHeaderTabs;

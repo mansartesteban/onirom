@@ -1,10 +1,8 @@
 /// <reference path="View.d.ts" />
 /// <reference path="../../Commons/UI.d.ts" />
 
-import VNode from "../../Commons/VNode";
+import VNode from "@ui/Core/Commons/VNode";
 
-class ViewContainer extends VNode implements IVNode {
-
-}
+class ViewContainer extends VNode implements IVNode {}
 
 export default ViewContainer;

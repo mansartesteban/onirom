@@ -1,109 +1,120 @@
 @use "sass:color";
 
-.btn
-{
+.btn {
     display: flex;
     align-items: center;
-    gap: var(--margin-sm);
     cursor: pointer;
     user-select: none;
 
+    gap: var(--margin-sm);
     padding: var(--margin-sm);
-    margin: 1rem; // DEBUG
+    // margin: 1rem; // DEBUG
 
-    &:hover
-    {
+    &:hover {
         background-color: color.adjust($default-color, $lightness: -5%);
     }
 
-    &:active
-    {
+    &:active {
         background-color: color.adjust($default-color, $lightness: -10%);
     }
 
-    &.rounded
-    {
+    &.rounded {
         border-radius: $border-radius-md;
     }
 
-    &:not(.as-text)
-    {
+    &.xs {
+        font-size: .5rem;
+        gap: var(--margin-xs);
+        padding: var(--margin-xs);
+    }
+
+    &.sm {
+        font-size: .75rem;
+        gap: var(--margin-sm);
+        padding: var(--margin-sm);
+    }
+
+    &.md {
+        font-size: 1rem;
+        gap: var(--margin-md);
+        padding: var(--margin-md);
+    }
+
+    &.lg {
+        font-size: 1.25rem;
+        gap: var(--margin-lg);
+        padding: var(--margin-lg);
+    }
+
+    &.xl {
+        font-size: 1.5rem;
+        gap: var(--margin-lg);
+        padding: var(--margin-xl);
+    }
+
+
+    &:not(.as-text) {
         background-color: $default-color;
 
-        &.primary
-        {
+        &.primary {
             background-color: $primary-color;
 
-            &:hover
-            {
+            &:hover {
                 background-color: color.adjust($primary-color, $lightness: -10%, $saturation: -30%);
             }
 
-            &:active
-            {
+            &:active {
                 background-color: color.adjust($primary-color, $lightness: -20%, $saturation: -40%);
             }
         }
 
-        &.success
-        {
+        &.success {
             background-color: $success-color;
             color: $dark-color;
 
-            &:hover
-            {
+            &:hover {
                 background-color: color.adjust($success-color, $lightness: -10%, $saturation: -10%);
             }
 
-            &:active
-            {
+            &:active {
                 background-color: color.adjust($success-color, $lightness: -20%, $saturation: -20%);
             }
         }
 
-        &.warning
-        {
+        &.warning {
             background-color: $warning-color;
             color: $dark-color;
 
-            &:hover
-            {
+            &:hover {
                 background-color: color.adjust($warning-color, $lightness: -10%, $saturation: -20%);
             }
 
-            &:active
-            {
+            &:active {
                 background-color: color.adjust($warning-color, $lightness: -20%, $saturation: -30%);
             }
         }
 
-        &.error
-        {
+        &.error {
             background-color: $error-color;
 
-            &:hover
-            {
+            &:hover {
                 background-color: color.adjust($error-color, $lightness: -10%, $saturation: -20%);
             }
 
-            &:active
-            {
+            &:active {
                 background-color: color.adjust($error-color, $lightness: -20%, $saturation: -30%);
             }
         }
 
-        &.info
-        {
+        &.info {
             background-color: $info-color;
             color: $dark-color;
 
-            &:hover
-            {
+            &:hover {
                 background-color: color.adjust($info-color, $lightness: -10%, $saturation: -20%);
             }
 
-            &:active
-            {
+            &:active {
                 background-color: color.adjust($info-color, $lightness: -20%, $saturation: -30%);
             }
         }
